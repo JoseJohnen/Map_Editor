@@ -1,0 +1,170 @@
+!SceneAsset
+Id: 47aabb8b-dabe-4edb-a054-51f7f109ad04
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+ChildrenIds: []
+Offset: {X: 0.0, Y: 0.0, Z: 0.0}
+Hierarchy:
+    RootParts:
+        - ref!! 8dfe0afb-2028-4efe-a897-036838b7173f
+        - ref!! 827cd6ea-662b-483b-9eee-5c9f0f88b1f3
+        - ref!! 856ceef8-6ec0-437d-9ea0-cb1b6e8de7ee
+        - ref!! b610eace-9e23-445f-9711-724e60f64ea2
+        - ref!! acc1460b-e31b-41e4-bc5c-0e75823ab1fd
+    Parts:
+        -   Entity:
+                Id: 2deff79a-3b76-41a4-8622-944c819e5844
+                Name: Sphere
+                Components:
+                    a17cee883ec8612266983832ffc1fe15: !TransformComponent
+                        Id: 9e24b1d2-e290-4cfc-9595-d9018b18cd44
+                        Position: {X: 2.6, Y: 0.6, Z: -1.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    efd22cc3475c21cb15a8c77a65d98018: !ModelComponent
+                        Id: 0e22af70-7c9b-4400-9812-53f1357957f7
+                        Model: 1f65db06-b12b-4d41-bab2-58af188354a5:Sphere
+                        Materials: {}
+                    e1d1d013a23a4eeb9d501e7887c621ce: !RigidbodyComponent
+                        Id: e5f37f0a-0721-4205-a53a-170c1c3914c7
+                        CanSleep: false
+                        Restitution: 0.0
+                        Friction: 0.5
+                        RollingFriction: 0.0
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        IsKinematic: false
+                        Mass: 1.0
+                        LinearDamping: 0.0
+                        AngularDamping: 0.0
+                        OverrideGravity: false
+                        Gravity: {X: 0.0, Y: 0.0, Z: 0.0}
+                        NodeName: null
+                        ColliderShapes:
+                            dc97dce5bda7fe3d90b3ef65cecdbf98: !BoxColliderShapeDesc
+                                Is2D: false
+                                Size: {X: 1.0, Y: 1.0, Z: 1.0}
+                                LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
+                                LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+        -   Entity:
+                Id: 827cd6ea-662b-483b-9eee-5c9f0f88b1f3
+                Name: Directional light
+                Components:
+                    0e113da5d31a6c153b255c061b136ef8: !TransformComponent
+                        Id: 2be4a162-1b6c-472a-bc40-1484aa3bdffc
+                        Position: {X: 0.0, Y: 2.0, Z: 0.0}
+                        Rotation: {X: 1.131334E-08, Y: -0.9659258, Z: -0.25881904, W: -4.222196E-08}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    b4ecdf46b69c45a042406c6f47cd04b6: !LightComponent
+                        Id: f58afec1-257d-435f-ab55-615b980eca40
+                        Type: !LightDirectional
+                            Color: !ColorRgbProvider
+                                Value: {R: 1.0, G: 1.0, B: 1.0}
+                            Shadow:
+                                Enabled: true
+                                Filter: !LightShadowMapFilterTypePcf
+                                    FilterSize: Filter5x5
+                                Size: Large
+                                DepthRange: {}
+                                PartitionMode: !LightDirectionalShadowMap.PartitionLogarithmic {}
+                                ComputeTransmittance: false
+                                BiasParameters: {}
+                        Intensity: 20.0
+        -   Entity:
+                Id: 856ceef8-6ec0-437d-9ea0-cb1b6e8de7ee
+                Name: Skybox
+                Components:
+                    abe3aeb2e84b34f5ff9711d196a80367: !TransformComponent
+                        Id: bffd44ff-3bc5-446c-a619-b565ff22eb22
+                        Position: {X: 0.0, Y: 2.0, Z: -2.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    fe773d182925507fda0e76bc57917365: !BackgroundComponent
+                        Id: 752877e4-8147-48ef-992b-bfac3dca3c60
+                        Texture: 39876149-563f-49ce-927d-87ec2d5d1b21:Skybox texture
+                    614bb7a4316f431c1a2782bbda29f611: !LightComponent
+                        Id: fa53f5c3-1647-4261-8050-0af8b44844f9
+                        Type: !LightSkybox
+                            Skybox: 92584a06-8284-49d8-afdd-937e28423963:Skybox
+        -   Entity:
+                Id: 8dfe0afb-2028-4efe-a897-036838b7173f
+                Name: IntroCamera
+                Components:
+                    10efba205d771d3156738b5e40e50659: !TransformComponent
+                        Id: 5a56fff3-b0a7-4466-9488-facd6879f6d8
+                        Position: {X: 2.6, Y: 0.6, Z: -1.0}
+                        Rotation: {X: 0.0, Y: 0.82903755, Z: 0.0, W: 0.5591929}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children:
+                            f31cfcb0826a32bc482fdf4cf7383968: ref!! 9e24b1d2-e290-4cfc-9595-d9018b18cd44
+                    79cb0615105dc4efb8d6f95c666fd81f: !CameraComponent
+                        Id: dddcbd6d-0e4f-4a6f-aaa3-745f2d6708c6
+                        Name: IntroCam
+                        Projection: Perspective
+                        Slot: 8c028451-5904-4136-a5cd-a1bd78172155
+                    a861a80fa62aad5965e17c7034c6be3f: !Map_Editor_HoD.BasicCameraController,Map_Editor
+                        Id: f1512057-4fce-436c-8d1b-94aa7036f318
+                        Gamepad: false
+                        KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
+                        TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
+                        SpeedFactor: 5.0
+                        KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
+                        MouseRotationSpeed: {X: 1.0, Y: 1.0}
+                        TouchRotationSpeed: {X: 1.0, Y: 0.7}
+                    1d1a9ebac883993f8d8e866656b908ef: !UIComponent
+                        Id: dc221e19-44b9-4dfa-9d2d-b163311c52dd
+                        Page: 56084db7-9231-408e-9742-4b093f0f53db:Page
+                        Resolution: {X: 1280.0, Y: 720.0, Z: 1000.0}
+                        Size: {X: 1.28, Y: 0.72, Z: 1.0}
+        -   Entity:
+                Id: acc1460b-e31b-41e4-bc5c-0e75823ab1fd
+                Name: WorldController
+                Components:
+                    fd09582c3f884e6e9d4b72476a583b91: !TransformComponent
+                        Id: 31669599-df82-475e-b2d2-e18f34d347a7
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    93c8320489164a1c73d43c19360b072f: !Map_Editor_HoD.Controllers.WorldController,Map_Editor
+                        Id: ae29acb7-5e9e-429a-bcfb-9109107b7c2d
+                        worldController: null
+        -   Entity:
+                Id: b610eace-9e23-445f-9711-724e60f64ea2
+                Name: Controller
+                Components:
+                    e05b9459513d58498bf9ead71346c326: !TransformComponent
+                        Id: 6dea5af9-0a9f-4821-ba5b-b294184818d3
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    6a9129e9ea313b45400b09037a07e287: !Map_Editor_HoD.Controllers.Controller,Map_Editor
+                        Id: 05b54dcd-adcb-4444-a884-562f1b95589f
+                        worldController: null
+                        dataFileProviderService: null
+                        l_Prefabs: {}
+                        l_Models: {}
+                        l_Sprites: {}
+                        l_Tileset: {}
+                        l_Textures: {}
+                        l_Materials: {}
+                        l_UI: {}
+                        movementDisable: false
+                        autoMovement: false
+                        isHistoryRelatedUsage: false
+                        isPressedZToRun: false
+                        isLoginInProcess: false
+                        isLoginSuccessfull: false
+                        dtIsLoginInProcess: 2023-04-28T18:06:23.5980552
+                        CursorPos: null
+                        lastPositionBeforeMove: 2023-04-28T18:06:23.5980732
+                        page: null
+                        thingy1: null
+                        thingy2: null
+                        MainSceneImages: null
+                        TextoFueraDeCutscene: false
