@@ -380,22 +380,39 @@ namespace Map_Editor_HoD.Controllers
                     btnLoad.Click += BtnLoad_Click;
                     btnSave.Click += BtnSave_Click;
 
-                    Grid grd = (Grid)re.RootElement.FindVisualRoot();
+                    Grid grd = (Grid)re.RootElement.FindName("SuperGralifragilisticaGrilla"); //(Grid)re.RootElement.FindVisualRoot();
+                    grd.RowDefinitions.Add(new StripDefinition());
 
                     Button nwButton = null;
                     SpriteFromSheet spSht = null;
 
-                    float topBase = -125;
-                    float leftBase = -625;
+                    //float topBase = -125;
+                    //float leftBase = -625;
 
-                    Thickness thickness;
                     int i = 0;
+                    int j = 0;
+                    List<Sprite> sprites = new List<Sprite>();
+
+                    foreach (SpriteSheet spriteSheet in l_Tileset)
+                    {
+                        foreach (Sprite item in spriteSheet.Sprites)
+                        {
+                            sprites.Add(item);
+                        }
+                    }
+
+                    for (int k = 0; k < (sprites.Count / 2); k++)
+                    {
+                        grd.RowDefinitions.Add(new StripDefinition());
+                    }
+
                     foreach (SpriteSheet spriteSheet in l_Tileset)
                     {
                         foreach (Sprite item in spriteSheet.Sprites)
                         {
                             nwButton = new Button();
                             nwButton.Name = "btn" + item.Name;
+                            nwButton.SetGridRow(j);
 
                             spSht = SpriteFromSheet.Create(spriteSheet, item.Name);
                             spSht.Sheet = spriteSheet;
@@ -406,21 +423,24 @@ namespace Map_Editor_HoD.Controllers
                             nwButton.Height = 38;
 
                             grd.Children.Add(nwButton);
-                            
-                            thickness = new Thickness();
-                            thickness.Top = topBase;
-                            thickness.Left = leftBase;
 
-                            if(i % 2 == 0 && i != 0)
+                            nwButton.SetGridColumn(0);
+                            //thickness = new Thickness();
+                            //thickness.Top = topBase;
+                            //thickness.Left = leftBase;
+
+                            if (i % 2 == 0 && i != 0)
                             {
-                                thickness.Left += 110;
-                                topBase += 86;
+                                nwButton.SetGridColumn(1);
+                                j++;
+                                //thickness.Left += 110;
+                                //topBase += 86;
                             }
 
-                            nwButton.Margin = thickness;
+                            //nwButton.Margin = thickness;
 
                             i++;
-                        } 
+                        }
                     }
                 }
             }
