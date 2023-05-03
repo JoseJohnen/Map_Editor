@@ -392,6 +392,7 @@ namespace Map_Editor_HoD.Controllers
                     int i = 0;
                     int j = 0;
                     List<Sprite> sprites = new List<Sprite>();
+                    bool 
 
                     foreach (SpriteSheet spriteSheet in l_Tileset)
                     {
