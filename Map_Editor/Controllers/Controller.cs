@@ -16,6 +16,11 @@ using Material = Stride.Rendering.Material;
 using System.IO;
 using Map_Editor_HoD.TilesModels;
 using Map_Editor_HoD.WorldModels;
+using Stride.UI;
+using Stride.UI.Panels;
+using Silk.NET.OpenGLES.Extensions.EXT;
+using Stride.Rendering.Sprites;
+using System.Security.Policy;
 
 namespace Map_Editor_HoD.Controllers
 {
@@ -357,10 +362,10 @@ namespace Map_Editor_HoD.Controllers
             try
             {
                 uIComponent = SceneSystem.SceneInstance.RootScene.Entities.FirstOrDefault(a => a.Name == "IntroCamera")?.Get<UIComponent>();
-
+                UIPage re = null;
                 if (uIComponent != null)
                 {
-                    UIPage re = uIComponent.Page;
+                    re = uIComponent.Page;
                     txtX = (EditText)re.RootElement.FindName("txtX");
                     txtY = (EditText)re.RootElement.FindName("txtY");
                     txtName = (EditText)re.RootElement.FindName("txtName");
@@ -374,6 +379,49 @@ namespace Map_Editor_HoD.Controllers
                     btnDelete.Click += BtnDelete_Click;
                     btnLoad.Click += BtnLoad_Click;
                     btnSave.Click += BtnSave_Click;
+
+                    Grid grd = (Grid)re.RootElement.FindVisualRoot();
+
+                    Button nwButton = null;
+                    SpriteFromSheet spSht = null;
+
+                    float topBase = -125;
+                    float leftBase = -625;
+
+                    Thickness thickness;
+                    int i = 0;
+                    foreach (SpriteSheet spriteSheet in l_Tileset)
+                    {
+                        foreach (Sprite item in spriteSheet.Sprites)
+                        {
+                            nwButton = new Button();
+                            nwButton.Name = "btn" + item.Name;
+
+                            spSht = SpriteFromSheet.Create(spriteSheet, item.Name);
+                            spSht.Sheet = spriteSheet;
+                            spSht.CurrentFrame = i;
+                            nwButton.NotPressedImage = (ISpriteProvider)spSht;
+
+                            nwButton.Width = 92;
+                            nwButton.Height = 38;
+
+                            grd.Children.Add(nwButton);
+                            
+                            thickness = new Thickness();
+                            thickness.Top = topBase;
+                            thickness.Left = leftBase;
+
+                            if(i % 2 == 0 && i != 0)
+                            {
+                                thickness.Left += 110;
+                                topBase += 86;
+                            }
+
+                            nwButton.Margin = thickness;
+
+                            i++;
+                        } 
+                    }
                 }
             }
             catch (Exception ex)
