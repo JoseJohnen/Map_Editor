@@ -44,6 +44,7 @@ namespace Map_Editor_HoD.Controllers
                         {
                             World world = World.CreateFromJson(textOriginal);
                             world.InstanceWorld();
+                            world.InstanceWorldEditorReqMechanics();
                             dic_worlds.TryAdd(world.Name, World.CreateFromJson(textOriginal));
                         }
                     }

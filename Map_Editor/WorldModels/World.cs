@@ -260,6 +260,7 @@ namespace Map_Editor_HoD.WorldModels
                 prgObj.FromJson(json);
                 prgObj.RegisterWorld();
                 prgObj.InstanceWorld();
+                prgObj.InstanceWorldEditorReqMechanics();
                 return prgObj;
             }
             catch (Exception ex)
@@ -269,7 +270,6 @@ namespace Map_Editor_HoD.WorldModels
             }
         }
 
-        //TODO: CHECK IF WORKS
         public void InstanceWorld()
         {
             try
@@ -277,6 +277,21 @@ namespace Map_Editor_HoD.WorldModels
                 foreach (Tile item in this.dic_worldTiles.Values)
                 {
                     item.InstanceTile();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("WorldController LoadWorld(string) Error: " + ex.Message);
+            }
+        }
+
+        public void InstanceWorldEditorReqMechanics()
+        {
+            try
+            {
+                foreach (Tile item in this.dic_worldTiles.Values)
+                {
+                    item.InstanceEditorReqMechanics();
                 }
             }
             catch (Exception ex)

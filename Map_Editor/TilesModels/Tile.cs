@@ -14,6 +14,8 @@ using Map_Editor_HoD.Code.Models;
 using Interfaz.Utilities;
 using Map_Editor_HoD.Assistants;
 using UtilityAssistant = Interfaz.Utilities.UtilityAssistant;
+using BulletSharp;
+using Stride.Physics;
 
 namespace Map_Editor_HoD.TilesModels
 {
@@ -272,6 +274,28 @@ namespace Map_Editor_HoD.TilesModels
             catch (Exception ex)
             {
                 Console.WriteLine("Error (Map_Editor_HoD.Models.TilesModels.Tile) InstanceTile: " + ex.Message);
+            }
+        }
+
+        public virtual void InstanceEditorReqMechanics()
+        {
+            try
+            {
+                RigidbodyComponent rComp = this.Entity.GetOrCreate<RigidbodyComponent>();
+                BoxColliderShape colShape = new BoxColliderShape(false, new Stride.Core.Mathematics.Vector3(1f, 0.1f, 1f));
+
+                rComp.RigidBodyType = RigidBodyTypes.Kinematic;
+                
+                StaticColliderComponent sComp = new StaticColliderComponent();
+                sComp.CollisionGroup = Stride.Physics.CollisionFilterGroups.CustomFilter1;
+                sComp.ColliderShape = colShape;
+                //sComp.ColliderShapes.Add(colShape);
+
+                this.Entity.Add(sComp);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error (Map_Editor_HoD.Models.TilesModels.Tile) InstanceEditorReqMechanics: " + ex.Message);
             }
         }
         #endregion

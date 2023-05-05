@@ -21,6 +21,7 @@ using Stride.UI.Panels;
 using Silk.NET.OpenGLES.Extensions.EXT;
 using Stride.Rendering.Sprites;
 using System.Security.Policy;
+using Map_Editor_HoD.Code.Models;
 
 namespace Map_Editor_HoD.Controllers
 {
@@ -389,59 +390,60 @@ namespace Map_Editor_HoD.Controllers
                     //float topBase = -125;
                     //float leftBase = -625;
 
-                    int i = 0;
+                    int i = 1;
                     int j = 0;
-                    List<Sprite> sprites = new List<Sprite>();
-                    bool 
+                    int m = 0;
+                    SpriteSheet lastSpriteSheet = new SpriteSheet();
+                    List<Pares<SpriteSheet, Sprite>> sprites = new List<Pares<SpriteSheet, Sprite>>();
 
                     foreach (SpriteSheet spriteSheet in l_Tileset)
                     {
                         foreach (Sprite item in spriteSheet.Sprites)
                         {
-                            sprites.Add(item);
+                            if (!item.Name.Contains("Tilesets/Tiles"))
+                            {
+                                sprites.Add(new Pares<SpriteSheet, Sprite>(spriteSheet, item));
+                            }
                         }
                     }
 
-                    for (int k = 0; k < (sprites.Count / 2); k++)
+                    for (int k = 0; k < Math.Ceiling(Convert.ToDecimal(sprites.Count / 2)); k++)
                     {
                         grd.RowDefinitions.Add(new StripDefinition());
                     }
 
-                    foreach (SpriteSheet spriteSheet in l_Tileset)
+                    foreach (Pares<SpriteSheet, Sprite> item in sprites)
                     {
-                        foreach (Sprite item in spriteSheet.Sprites)
+                        if(!lastSpriteSheet.Equals(item.Item1))
                         {
-                            nwButton = new Button();
-                            nwButton.Name = "btn" + item.Name;
-                            nwButton.SetGridRow(j);
-
-                            spSht = SpriteFromSheet.Create(spriteSheet, item.Name);
-                            spSht.Sheet = spriteSheet;
-                            spSht.CurrentFrame = i;
-                            nwButton.NotPressedImage = (ISpriteProvider)spSht;
-
-                            nwButton.Width = 92;
-                            nwButton.Height = 38;
-
-                            grd.Children.Add(nwButton);
-
-                            nwButton.SetGridColumn(0);
-                            //thickness = new Thickness();
-                            //thickness.Top = topBase;
-                            //thickness.Left = leftBase;
-
-                            if (i % 2 == 0 && i != 0)
-                            {
-                                nwButton.SetGridColumn(1);
-                                j++;
-                                //thickness.Left += 110;
-                                //topBase += 86;
-                            }
-
-                            //nwButton.Margin = thickness;
-
-                            i++;
+                            lastSpriteSheet = item.Item1;
+                            m = 0;
                         }
+
+                        nwButton = new Button();
+                        nwButton.Name = "btn" + item.Item2.Name;
+                        nwButton.SetGridRow(j);
+
+                        spSht = SpriteFromSheet.Create(item.Item1, item.Item2.Name);
+                        spSht.Sheet = item.Item1;
+                        spSht.CurrentFrame = m;
+                        nwButton.NotPressedImage = (ISpriteProvider)spSht;
+
+                        nwButton.Width = 92;
+                        nwButton.Height = 38;
+
+                        grd.Children.Add(nwButton);
+
+                        nwButton.SetGridColumn(0);
+
+                        if (i % 2 == 0 && i != 0)
+                        {
+                            nwButton.SetGridColumn(1);
+                            j++;
+                        }
+
+                        i++;
+                        m++;
                     }
                 }
             }
@@ -531,6 +533,7 @@ namespace Map_Editor_HoD.Controllers
                     WorldController.TestWorld.FrontBack = resultY;
                     WorldController.TestWorld.RegisterWorld(txtName.Text);
                     WorldController.TestWorld.FillWorld("Grass");
+                    WorldController.TestWorld.InstanceWorldEditorReqMechanics();
                 }
                 //string b = TestWorld.ToJson();
                 //World c = World.CreateFromJson(b);
