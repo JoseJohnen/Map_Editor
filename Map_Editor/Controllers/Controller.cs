@@ -18,9 +18,7 @@ using Map_Editor_HoD.TilesModels;
 using Map_Editor_HoD.WorldModels;
 using Stride.UI;
 using Stride.UI.Panels;
-using Silk.NET.OpenGLES.Extensions.EXT;
 using Stride.Rendering.Sprites;
-using System.Security.Policy;
 using Map_Editor_HoD.Code.Models;
 
 namespace Map_Editor_HoD.Controllers
@@ -74,7 +72,8 @@ namespace Map_Editor_HoD.Controllers
         public static TaskStatus dataAnswer = TaskStatus.Created;
         public static TaskStatus dataContinous = TaskStatus.Created;
 
-        public Entity CursorPos = null;
+        //public Entity CursorPos = null;
+        public string NameOfSelectedType = string.Empty;
 
         private readonly FastList<CameraComponent> cameraDb = new FastList<CameraComponent>();
 
@@ -83,7 +82,6 @@ namespace Map_Editor_HoD.Controllers
         bool textoFueraDeCutscene = false;
         private DateTime dateTimeTextoFueraDeCutScene = DateTime.Now;
 
-        //public UIPage page;
         public SpriteSheet MainSceneImages { get; set; }
         public bool TextoFueraDeCutscene
         {
@@ -99,23 +97,6 @@ namespace Map_Editor_HoD.Controllers
 
         private string Token;
 
-        //public Sound BackgroundMusic;
-        //public Sound GhostMusic;
-
-        //public Sound GhostLullaby;
-        //public Sound GhostScream;
-        //public Sound BabyCry;
-        //public Sound SonidoChoque;
-        //public Sound Thunder;
-
-        //private SoundInstance music;
-        //private SoundInstance effect;
-
-        //private Dictionary<string, Sound> DicMusic = new Dictionary<string, Sound>();
-        //private Dictionary<string, Sound> DicEffect = new Dictionary<string, Sound>();
-
-        public Entity thingy1;
-        public Entity thingy2;
         public override void Start()
         {
             //Preparing to work itself
@@ -180,10 +161,16 @@ namespace Map_Editor_HoD.Controllers
             if (UtilityAssistant.ScreenPositionToWorldPositionRaycast(Input.MousePosition, Controller.controller.GetActiveCamera(), Controller.controller.GetSimulation(), out clickResult))
             {
                 Console.WriteLine("X: " + Input.MousePosition.X + " Y: " + Input.MousePosition.Y);
-                //clickResult.HitResult;
+                Console.WriteLine("Entity: "+clickResult.ClickedEntity); //clickResult.HitResult;
+
+                Tile tle = null;
+                WorldController.TestWorld.dic_worldTiles.TryGetValue(clickResult.ClickedEntity.Name, out tle);
+                if(tle != null)
+                {
+                    tle.ChangeType(NameOfSelectedType, clickResult.ClickedEntity.Name);
+                }
             }
         }
-
 
         #region Utilitarios
         #region Preparativos
@@ -441,6 +428,12 @@ namespace Map_Editor_HoD.Controllers
                             nwButton.SetGridColumn(1);
                             j++;
                         }
+
+                        nwButton.Click += (s, e) =>
+                        {
+                            NameOfSelectedType = item.Item2.Name;
+                            Console.WriteLine("NameOfSelectedType: "+NameOfSelectedType);
+                        };
 
                         i++;
                         m++;

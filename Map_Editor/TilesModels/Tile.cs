@@ -14,7 +14,6 @@ using Map_Editor_HoD.Code.Models;
 using Interfaz.Utilities;
 using Map_Editor_HoD.Assistants;
 using UtilityAssistant = Interfaz.Utilities.UtilityAssistant;
-using BulletSharp;
 using Stride.Physics;
 
 namespace Map_Editor_HoD.TilesModels
@@ -289,13 +288,44 @@ namespace Map_Editor_HoD.TilesModels
                 StaticColliderComponent sComp = new StaticColliderComponent();
                 sComp.CollisionGroup = Stride.Physics.CollisionFilterGroups.CustomFilter1;
                 sComp.ColliderShape = colShape;
-                //sComp.ColliderShapes.Add(colShape);
 
                 this.Entity.Add(sComp);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error (Map_Editor_HoD.Models.TilesModels.Tile) InstanceEditorReqMechanics: " + ex.Message);
+            }
+        }
+
+        public virtual Tile ChangeType(string nameOfSelectedType, string nameInWorld)
+        {
+            try
+            {
+                if(string.IsNullOrWhiteSpace(nameOfSelectedType))
+                {
+                    Console.WriteLine("Tile ChangeType: "+nameOfSelectedType);
+                    return null;
+                }
+
+                Type typ = Tile.TypesOfTiles().Where(c => c.Name == nameOfSelectedType).FirstOrDefault();
+                if (typ == null)
+                {
+                    typ = Tile.TypesOfTiles().Where(c => c.FullName == nameOfSelectedType).FirstOrDefault();
+                }
+
+                object obtOfType = Activator.CreateInstance(typ); //Requires parameterless constructor.
+                                                                  //TODO: System to determine the type of enemy to make the object, prepare stats and then add it to the list
+
+                Tile prgObj = ((Tile)obtOfType);
+                prgObj.InstanceTile();
+                Tile rnTile = this;
+                WorldController.TestWorld.dic_worldTiles.TryUpdate(nameInWorld, prgObj, rnTile);
+                return prgObj;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error (Map_Editor_HoD.Models.TilesModels.Tile) ChangeType(string): " + ex.Message);
+                return null;
             }
         }
         #endregion
