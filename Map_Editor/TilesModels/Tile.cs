@@ -284,7 +284,7 @@ namespace Map_Editor_HoD.TilesModels
                 BoxColliderShape colShape = new BoxColliderShape(false, new Stride.Core.Mathematics.Vector3(1f, 0.1f, 1f));
 
                 rComp.RigidBodyType = RigidBodyTypes.Kinematic;
-                
+
                 StaticColliderComponent sComp = new StaticColliderComponent();
                 sComp.CollisionGroup = Stride.Physics.CollisionFilterGroups.CustomFilter1;
                 sComp.ColliderShape = colShape;
@@ -301,9 +301,9 @@ namespace Map_Editor_HoD.TilesModels
         {
             try
             {
-                if(string.IsNullOrWhiteSpace(nameOfSelectedType))
+                if (string.IsNullOrWhiteSpace(nameOfSelectedType))
                 {
-                    Console.WriteLine("Tile ChangeType: "+nameOfSelectedType);
+                    Console.WriteLine("Tile ChangeType: " + nameOfSelectedType);
                     return null;
                 }
 
@@ -318,8 +318,40 @@ namespace Map_Editor_HoD.TilesModels
 
                 Tile prgObj = ((Tile)obtOfType);
                 prgObj.InstanceTile();
+                prgObj.InstanceEditorReqMechanics();
                 Tile rnTile = this;
-                WorldController.TestWorld.dic_worldTiles.TryUpdate(nameInWorld, prgObj, rnTile);
+
+                //prgObj
+                WorldController.TestWorld.dic_worldTiles.Remove(nameInWorld, out rnTile);
+                if (rnTile != null)
+                {
+                    prgObj.Position = rnTile.Position;
+                    prgObj.Area = rnTile.Area;
+
+                    // Remove the entity from the scene
+                    Entity.Scene.Entities.Remove(rnTile.entity);
+
+                    // Remove all components that depend on the entity
+                    foreach (var component in rnTile.entity.Components.ToArray())
+                    {
+                        if (component is IDisposable disposableComponent)
+                        {
+                            disposableComponent.Dispose();
+                        }
+
+                        rnTile.entity.Remove(component);
+                    }
+
+                    // Dispose of the entity
+                    rnTile.entity.Dispose();
+                }
+
+                bool isDone = false;
+                do
+                {
+                    isDone = WorldController.TestWorld.dic_worldTiles.TryAdd(nameInWorld, prgObj);
+                }
+                while (!isDone);
                 return prgObj;
             }
             catch (Exception ex)

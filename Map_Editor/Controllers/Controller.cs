@@ -20,6 +20,7 @@ using Stride.UI;
 using Stride.UI.Panels;
 using Stride.Rendering.Sprites;
 using Map_Editor_HoD.Code.Models;
+using Stride.Input;
 
 namespace Map_Editor_HoD.Controllers
 {
@@ -160,14 +161,20 @@ namespace Map_Editor_HoD.Controllers
             ClickResult clickResult = new ClickResult();
             if (UtilityAssistant.ScreenPositionToWorldPositionRaycast(Input.MousePosition, Controller.controller.GetActiveCamera(), Controller.controller.GetSimulation(), out clickResult))
             {
-                Console.WriteLine("X: " + Input.MousePosition.X + " Y: " + Input.MousePosition.Y);
-                Console.WriteLine("Entity: "+clickResult.ClickedEntity); //clickResult.HitResult;
-
-                Tile tle = null;
-                WorldController.TestWorld.dic_worldTiles.TryGetValue(clickResult.ClickedEntity.Name, out tle);
-                if(tle != null)
+                if (Input.HasMouse)
                 {
-                    tle.ChangeType(NameOfSelectedType, clickResult.ClickedEntity.Name);
+                    if (Input.IsMouseButtonDown(MouseButton.Left))
+                    {
+                        Console.WriteLine("X: " + Input.MousePosition.X + " Y: " + Input.MousePosition.Y);
+                        Console.WriteLine("Entity: " + clickResult.ClickedEntity); //clickResult.HitResult;
+
+                        Tile tle = null;
+                        WorldController.TestWorld.dic_worldTiles.TryGetValue(clickResult.ClickedEntity.Name, out tle);
+                        if (tle != null)
+                        {
+                            tle.ChangeType(NameOfSelectedType, clickResult.ClickedEntity.Name);
+                        }
+                    }
                 }
             }
         }
@@ -401,7 +408,7 @@ namespace Map_Editor_HoD.Controllers
 
                     foreach (Pares<SpriteSheet, Sprite> item in sprites)
                     {
-                        if(!lastSpriteSheet.Equals(item.Item1))
+                        if (!lastSpriteSheet.Equals(item.Item1))
                         {
                             lastSpriteSheet = item.Item1;
                             m = 0;
@@ -432,7 +439,7 @@ namespace Map_Editor_HoD.Controllers
                         nwButton.Click += (s, e) =>
                         {
                             NameOfSelectedType = item.Item2.Name;
-                            Console.WriteLine("NameOfSelectedType: "+NameOfSelectedType);
+                            Console.WriteLine("NameOfSelectedType: " + NameOfSelectedType);
                         };
 
                         i++;
