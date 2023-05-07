@@ -281,7 +281,7 @@ namespace Map_Editor_HoD.TilesModels
             try
             {
                 RigidbodyComponent rComp = this.Entity.GetOrCreate<RigidbodyComponent>();
-                BoxColliderShape colShape = new BoxColliderShape(false, new Stride.Core.Mathematics.Vector3(1f, 0.1f, 1f));
+                BoxColliderShape colShape = new BoxColliderShape(false, new Stride.Core.Mathematics.Vector3(0.8f, 0.1f, 0.8f));
 
                 rComp.RigidBodyType = RigidBodyTypes.Kinematic;
 
