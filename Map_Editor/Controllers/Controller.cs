@@ -28,6 +28,7 @@ namespace Map_Editor_HoD.Controllers
     {
         public WorldController worldController;
         public static Controller controller;
+        public static SceneSystem sceneSystem;
         //private static string instrucciones;
 
         public IDatabaseFileProviderService dataFileProviderService;
@@ -104,6 +105,7 @@ namespace Map_Editor_HoD.Controllers
             Services.AddService(this);
             base.Start();
             controller = Entity.Get<Controller>();
+            sceneSystem = SceneSystem;
             //Starting to prepare everything else
 
             InitTimer();
@@ -177,6 +179,14 @@ namespace Map_Editor_HoD.Controllers
                     }
                 }
             }
+
+            /*foreach (Entity item in this.Entity.Scene.Entities.Reverse())
+            {
+                if(string.IsNullOrWhiteSpace(item.Name))
+                {
+                    this.Entity.Scene.Entities.Remove(item);
+                }
+            }*/
         }
 
         #region Utilitarios
@@ -473,7 +483,8 @@ namespace Map_Editor_HoD.Controllers
 
                     foreach (Tile item in WorldController.TestWorld.dic_worldTiles.Values)
                     {
-                        this.Entity.Scene.Entities.Remove(item.Entity);
+                        //this.Entity.Scene.Entities.Remove(item.Entity);
+                        SceneSystem.SceneInstance.RootScene.Entities.Remove(item.Entity);
                     }
                     WorldController.TestWorld.dic_worldTiles.Clear();
                     WorldController.TestWorld = null;

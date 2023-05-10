@@ -328,22 +328,35 @@ namespace Map_Editor_HoD.TilesModels
                     prgObj.Position = rnTile.Position;
                     prgObj.Area = rnTile.Area;
 
-                    // Remove the entity from the scene
-                    Entity.Scene.Entities.Remove(rnTile.entity);
-
-                    // Remove all components that depend on the entity
-                    foreach (var component in rnTile.entity.Components.ToArray())
+                    if (rnTile.entity != null)
                     {
-                        if (component is IDisposable disposableComponent)
+                        //// Remove all components that depend on the entity
+                        /*foreach (var component in rnTile.entity.Components.ToArray())
                         {
-                            disposableComponent.Dispose();
+                            if (component is IDisposable disposableComponent)
+                            {
+                                disposableComponent.Dispose();
+                            }
+
+                            rnTile.entity.Remove(component);
+                        }*/
+
+                        // Remove the entity from the scene
+                        //rnTile.entity = null;
+                        //rnTile = null;
+
+                        if (rnTile.entity != null)
+                        {
+                            if (Controller.sceneSystem.SceneInstance.RootScene.Entities.Contains(rnTile.entity))
+                            {
+                                //rnTile.entity.Scene.Entities.Remove(rnTile.entity);
+                                Controller.sceneSystem.SceneInstance.RootScene.Entities.Remove(rnTile.entity);
+                            }
                         }
 
-                        rnTile.entity.Remove(component);
+                        // Dispose of the entity
+                        //rnTile.entity.Dispose();
                     }
-
-                    // Dispose of the entity
-                    rnTile.entity.Dispose();
                 }
 
                 bool isDone = false;
