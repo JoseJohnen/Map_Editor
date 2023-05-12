@@ -1490,6 +1490,19 @@ namespace Map_Editor_HoD.Assistants
             }
         }
 
+        /*public static void ChangeSprite(this SpriteComponent sprComp, string nameOfSprite)
+        {
+            try
+            {
+                sprComp.SpriteProvider = SpriteFromSheet.Create(sprComp., nameOfSprite);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: (ExtendedClasses) ChangeSpriteSheet(SpriteSheet): " + ex.Message);
+            }
+        }*/
+
+
         public static void ChangeSpriteSheet(this SpriteComponent sprComp, Texture texture)
         {
             SpriteFromTexture nwSfT = (SpriteFromTexture)new Sprite(texture);

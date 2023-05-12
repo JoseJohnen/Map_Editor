@@ -280,11 +280,7 @@ namespace Map_Editor_HoD.TilesModels
         {
             try
             {
-                RigidbodyComponent rComp = this.Entity.GetOrCreate<RigidbodyComponent>();
                 BoxColliderShape colShape = new BoxColliderShape(false, new Stride.Core.Mathematics.Vector3(0.8f, 0.1f, 0.8f));
-
-                rComp.RigidBodyType = RigidBodyTypes.Kinematic;
-
                 StaticColliderComponent sComp = new StaticColliderComponent();
                 sComp.CollisionGroup = Stride.Physics.CollisionFilterGroups.CustomFilter1;
                 sComp.ColliderShape = colShape;
@@ -317,52 +313,28 @@ namespace Map_Editor_HoD.TilesModels
                                                                   //TODO: System to determine the type of enemy to make the object, prepare stats and then add it to the list
 
                 Tile prgObj = ((Tile)obtOfType);
-                prgObj.InstanceTile();
-                prgObj.InstanceEditorReqMechanics();
                 Tile rnTile = this;
 
-                //prgObj
-                WorldController.TestWorld.dic_worldTiles.Remove(nameInWorld, out rnTile);
                 if (rnTile != null)
                 {
                     prgObj.Position = rnTile.Position;
                     prgObj.Area = rnTile.Area;
+                    prgObj.Name = rnTile.Name;
+                    prgObj.InWorldPos = rnTile.InWorldPos;
 
                     if (rnTile.entity != null)
                     {
-                        //// Remove all components that depend on the entity
-                        /*foreach (var component in rnTile.entity.Components.ToArray())
-                        {
-                            if (component is IDisposable disposableComponent)
-                            {
-                                disposableComponent.Dispose();
-                            }
+                        prgObj.entity = rnTile.entity;
+                        prgObj.entity.GetOrCreate<SpriteComponent>().SpriteProvider = SpriteFromSheet.Create(Controller.controller.SelectedSpriteSheet, nameOfSelectedType);
 
-                            rnTile.entity.Remove(component);
-                        }*/
-
-                        // Remove the entity from the scene
-                        //rnTile.entity = null;
-                        //rnTile = null;
-
-                        if (rnTile.entity != null)
-                        {
-                            if (Controller.sceneSystem.SceneInstance.RootScene.Entities.Contains(rnTile.entity))
-                            {
-                                //rnTile.entity.Scene.Entities.Remove(rnTile.entity);
-                                Controller.sceneSystem.SceneInstance.RootScene.Entities.Remove(rnTile.entity);
-                            }
-                        }
-
-                        // Dispose of the entity
-                        //rnTile.entity.Dispose();
                     }
                 }
 
                 bool isDone = false;
                 do
                 {
-                    isDone = WorldController.TestWorld.dic_worldTiles.TryAdd(nameInWorld, prgObj);
+                    isDone = WorldController.TestWorld.dic_worldTiles.TryUpdate(nameInWorld, prgObj, rnTile);
+                    //isDone = WorldController.TestWorld.dic_worldTiles.TryAdd(nameInWorld, prgObj);
                 }
                 while (!isDone);
                 return prgObj;

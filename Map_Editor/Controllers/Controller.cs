@@ -21,6 +21,7 @@ using Stride.UI.Panels;
 using Stride.Rendering.Sprites;
 using Map_Editor_HoD.Code.Models;
 using Stride.Input;
+using Stride.Core;
 
 namespace Map_Editor_HoD.Controllers
 {
@@ -75,6 +76,7 @@ namespace Map_Editor_HoD.Controllers
         public static TaskStatus dataContinous = TaskStatus.Created;
 
         //public Entity CursorPos = null;
+        public SpriteSheet SelectedSpriteSheet { get; set; }
         public string NameOfSelectedType = string.Empty;
 
         private readonly FastList<CameraComponent> cameraDb = new FastList<CameraComponent>();
@@ -84,7 +86,6 @@ namespace Map_Editor_HoD.Controllers
         bool textoFueraDeCutscene = false;
         private DateTime dateTimeTextoFueraDeCutScene = DateTime.Now;
 
-        public SpriteSheet MainSceneImages { get; set; }
         public bool TextoFueraDeCutscene
         {
             get => textoFueraDeCutscene; set
@@ -171,10 +172,13 @@ namespace Map_Editor_HoD.Controllers
                         Console.WriteLine("Entity: " + clickResult.ClickedEntity); //clickResult.HitResult;
 
                         Tile tle = null;
-                        WorldController.TestWorld.dic_worldTiles.TryGetValue(clickResult.ClickedEntity.Name, out tle);
-                        if (tle != null)
+                        if (WorldController.TestWorld != null)
                         {
-                            tle.ChangeType(NameOfSelectedType, clickResult.ClickedEntity.Name);
+                            WorldController.TestWorld.dic_worldTiles.TryGetValue(clickResult.ClickedEntity.Name, out tle);
+                            if (tle != null)
+                            {
+                                tle.ChangeType(NameOfSelectedType, clickResult.ClickedEntity.Name);
+                            }
                         }
                     }
                 }
@@ -449,6 +453,19 @@ namespace Map_Editor_HoD.Controllers
                         nwButton.Click += (s, e) =>
                         {
                             NameOfSelectedType = item.Item2.Name;
+                            foreach (SpriteSheet spriteSheet in l_Tileset)
+                            {
+                                foreach (Sprite itm in spriteSheet.Sprites)
+                                {
+                                    if (!itm.Name.Contains("Tilesets/Tiles"))
+                                    {
+                                        if (itm.Name.Equals(item.Item2.Name))
+                                        {
+                                            SelectedSpriteSheet = spriteSheet;
+                                        }
+                                    }
+                                }
+                            }
                             Console.WriteLine("NameOfSelectedType: " + NameOfSelectedType);
                         };
 
@@ -471,24 +488,61 @@ namespace Map_Editor_HoD.Controllers
                 txtY.IsSelectionActive = false;
                 txtName.IsSelectionActive = false;
 
-                WorldModels.World empty = null;
+                //WorldModels.World empty = null;
                 if (WorldController.dic_worlds.Count == 0)
                 {
                     return;
                 }
 
-                if (WorldController.TestWorld != null)
+                /*if (WorldController.TestWorld != null)
                 {
                     WorldController.dic_worlds.Remove(WorldController.TestWorld.Name, out empty);
+                    TrackingCollection<Entity> t_collection = new TrackingCollection<Entity>();
+                    bool evaluator = true;
 
+                    foreach (Entity itm in SceneSystem.SceneInstance.RootScene.Entities)
+                    {
+                        itm.Scene = null;
+                    }
+
+                    foreach (Entity itm in SceneSystem.SceneInstance.RootScene.Entities.Where(c => !c.Name.Contains("Tile")).ToList())
+                    {
+                        t_collection.Add(itm);
+                    }*/
+
+                /*foreach (Entity itm in SceneSystem.SceneInstance.RootScene.Entities)
+                {
                     foreach (Tile item in WorldController.TestWorld.dic_worldTiles.Values)
                     {
-                        //this.Entity.Scene.Entities.Remove(item.Entity);
-                        SceneSystem.SceneInstance.RootScene.Entities.Remove(item.Entity);
+                        if(itm.Name == item.Entity.Name)
+                        {
+                            evaluator = false;
+                        }
+
+                        if(evaluator)
+                        {
+                            //itm.Scene.Parent = null;
+                            if(!t_collection.Contains(itm))
+                            {
+                                itm.Scene = null;
+                                t_collection.Add(itm);
+                            }
+                            evaluator = true;
+                        }
                     }
-                    WorldController.TestWorld.dic_worldTiles.Clear();
-                    WorldController.TestWorld = null;
-                    WorldController.dic_worlds.Clear();
+                    //this.Entity.Scene.Entities.Remove(item.Entity);
+                }*/
+
+                /*SceneSystem.SceneInstance.RootScene.Entities.Clear();
+                SceneSystem.SceneInstance.RootScene.Entities.AddRange(t_collection);*/
+                WorldController.TestWorld.dic_worldTiles.Clear();
+                WorldController.TestWorld = null;
+                WorldController.dic_worlds.Clear();
+                //}
+                foreach (Entity itm in SceneSystem.SceneInstance.RootScene.Entities.Where(c => c.Name.Contains("Tile")).Reverse()) //.Where(c => !c.Name.Contains("Tile")).ToList())
+                {
+                    //itm.RemoveDisposeBy
+                    SceneSystem.SceneInstance.RootScene.Entities.Remove(itm);
                 }
             }
             catch (Exception ex)

@@ -46,6 +46,7 @@ namespace Map_Editor_HoD.Controllers
                             world.InstanceWorld();
                             world.InstanceWorldEditorReqMechanics();
                             dic_worlds.TryAdd(world.Name, World.CreateFromJson(textOriginal));
+                            TestWorld = world;
                         }
                     }
                 }
