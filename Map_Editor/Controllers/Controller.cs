@@ -18,9 +18,10 @@ using Map_Editor_HoD.TilesModels;
 using Map_Editor_HoD.WorldModels;
 using Stride.UI;
 using Stride.UI.Panels;
-using Silk.NET.OpenGLES.Extensions.EXT;
 using Stride.Rendering.Sprites;
-using System.Security.Policy;
+using Map_Editor_HoD.Code.Models;
+using Stride.Input;
+using Stride.Core;
 
 namespace Map_Editor_HoD.Controllers
 {
@@ -28,6 +29,7 @@ namespace Map_Editor_HoD.Controllers
     {
         public WorldController worldController;
         public static Controller controller;
+        public static SceneSystem sceneSystem;
         //private static string instrucciones;
 
         public IDatabaseFileProviderService dataFileProviderService;
@@ -73,7 +75,9 @@ namespace Map_Editor_HoD.Controllers
         public static TaskStatus dataAnswer = TaskStatus.Created;
         public static TaskStatus dataContinous = TaskStatus.Created;
 
-        public Entity CursorPos = null;
+        //public Entity CursorPos = null;
+        public SpriteSheet SelectedSpriteSheet { get; set; }
+        public string NameOfSelectedType = string.Empty;
 
         private readonly FastList<CameraComponent> cameraDb = new FastList<CameraComponent>();
 
@@ -82,8 +86,6 @@ namespace Map_Editor_HoD.Controllers
         bool textoFueraDeCutscene = false;
         private DateTime dateTimeTextoFueraDeCutScene = DateTime.Now;
 
-        //public UIPage page;
-        public SpriteSheet MainSceneImages { get; set; }
         public bool TextoFueraDeCutscene
         {
             get => textoFueraDeCutscene; set
@@ -98,29 +100,13 @@ namespace Map_Editor_HoD.Controllers
 
         private string Token;
 
-        //public Sound BackgroundMusic;
-        //public Sound GhostMusic;
-
-        //public Sound GhostLullaby;
-        //public Sound GhostScream;
-        //public Sound BabyCry;
-        //public Sound SonidoChoque;
-        //public Sound Thunder;
-
-        //private SoundInstance music;
-        //private SoundInstance effect;
-
-        //private Dictionary<string, Sound> DicMusic = new Dictionary<string, Sound>();
-        //private Dictionary<string, Sound> DicEffect = new Dictionary<string, Sound>();
-
-        public Entity thingy1;
-        public Entity thingy2;
         public override void Start()
         {
             //Preparing to work itself
             Services.AddService(this);
             base.Start();
             controller = Entity.Get<Controller>();
+            sceneSystem = SceneSystem;
             //Starting to prepare everything else
 
             InitTimer();
@@ -178,11 +164,34 @@ namespace Map_Editor_HoD.Controllers
             ClickResult clickResult = new ClickResult();
             if (UtilityAssistant.ScreenPositionToWorldPositionRaycast(Input.MousePosition, Controller.controller.GetActiveCamera(), Controller.controller.GetSimulation(), out clickResult))
             {
-                Console.WriteLine("X: " + Input.MousePosition.X + " Y: " + Input.MousePosition.Y);
-                //clickResult.HitResult;
-            }
-        }
+                if (Input.HasMouse)
+                {
+                    if (Input.IsMouseButtonDown(MouseButton.Left))
+                    {
+                        Console.WriteLine("X: " + Input.MousePosition.X + " Y: " + Input.MousePosition.Y);
+                        Console.WriteLine("Entity: " + clickResult.ClickedEntity); //clickResult.HitResult;
 
+                        Tile tle = null;
+                        if (WorldController.TestWorld != null)
+                        {
+                            WorldController.TestWorld.dic_worldTiles.TryGetValue(clickResult.ClickedEntity.Name, out tle);
+                            if (tle != null)
+                            {
+                                tle.ChangeType(NameOfSelectedType, clickResult.ClickedEntity.Name);
+                            }
+                        }
+                    }
+                }
+            }
+
+            /*foreach (Entity item in this.Entity.Scene.Entities.Reverse())
+            {
+                if(string.IsNullOrWhiteSpace(item.Name))
+                {
+                    this.Entity.Scene.Entities.Remove(item);
+                }
+            }*/
+        }
 
         #region Utilitarios
         #region Preparativos
@@ -380,47 +389,88 @@ namespace Map_Editor_HoD.Controllers
                     btnLoad.Click += BtnLoad_Click;
                     btnSave.Click += BtnSave_Click;
 
-                    Grid grd = (Grid)re.RootElement.FindVisualRoot();
+                    Grid grd = (Grid)re.RootElement.FindName("SuperGralifragilisticaGrilla"); //(Grid)re.RootElement.FindVisualRoot();
+                    grd.RowDefinitions.Add(new StripDefinition());
 
                     Button nwButton = null;
                     SpriteFromSheet spSht = null;
 
-                    float topBase = -125;
-                    float leftBase = -625;
+                    //float topBase = -125;
+                    //float leftBase = -625;
 
-                    Thickness thickness;
-                    int i = 0;
+                    int i = 1;
+                    int j = 0;
+                    int m = 0;
+                    SpriteSheet lastSpriteSheet = new SpriteSheet();
+                    List<Pares<SpriteSheet, Sprite>> sprites = new List<Pares<SpriteSheet, Sprite>>();
+
                     foreach (SpriteSheet spriteSheet in l_Tileset)
                     {
                         foreach (Sprite item in spriteSheet.Sprites)
                         {
-                            nwButton = new Button();
-                            nwButton.Name = "btn" + item.Name;
-
-                            spSht = SpriteFromSheet.Create(spriteSheet, item.Name);
-                            spSht.Sheet = spriteSheet;
-                            spSht.CurrentFrame = i;
-                            nwButton.NotPressedImage = (ISpriteProvider)spSht;
-
-                            nwButton.Width = 92;
-                            nwButton.Height = 38;
-
-                            grd.Children.Add(nwButton);
-                            
-                            thickness = new Thickness();
-                            thickness.Top = topBase;
-                            thickness.Left = leftBase;
-
-                            if(i % 2 == 0 && i != 0)
+                            if (!item.Name.Contains("Tilesets/Tiles"))
                             {
-                                thickness.Left += 110;
-                                topBase += 86;
+                                sprites.Add(new Pares<SpriteSheet, Sprite>(spriteSheet, item));
                             }
+                        }
+                    }
 
-                            nwButton.Margin = thickness;
+                    for (int k = 0; k < Math.Ceiling(Convert.ToDecimal(sprites.Count / 2)); k++)
+                    {
+                        grd.RowDefinitions.Add(new StripDefinition());
+                    }
 
-                            i++;
-                        } 
+                    foreach (Pares<SpriteSheet, Sprite> item in sprites)
+                    {
+                        if (!lastSpriteSheet.Equals(item.Item1))
+                        {
+                            lastSpriteSheet = item.Item1;
+                            m = 0;
+                        }
+
+                        nwButton = new Button();
+                        nwButton.Name = "btn" + item.Item2.Name;
+                        nwButton.SetGridRow(j);
+
+                        spSht = SpriteFromSheet.Create(item.Item1, item.Item2.Name);
+                        spSht.Sheet = item.Item1;
+                        spSht.CurrentFrame = m;
+                        nwButton.NotPressedImage = (ISpriteProvider)spSht;
+
+                        nwButton.Width = 92;
+                        nwButton.Height = 38;
+
+                        grd.Children.Add(nwButton);
+
+                        nwButton.SetGridColumn(0);
+
+                        if (i % 2 == 0 && i != 0)
+                        {
+                            nwButton.SetGridColumn(1);
+                            j++;
+                        }
+
+                        nwButton.Click += (s, e) =>
+                        {
+                            NameOfSelectedType = item.Item2.Name;
+                            foreach (SpriteSheet spriteSheet in l_Tileset)
+                            {
+                                foreach (Sprite itm in spriteSheet.Sprites)
+                                {
+                                    if (!itm.Name.Contains("Tilesets/Tiles"))
+                                    {
+                                        if (itm.Name.Equals(item.Item2.Name))
+                                        {
+                                            SelectedSpriteSheet = spriteSheet;
+                                        }
+                                    }
+                                }
+                            }
+                            Console.WriteLine("NameOfSelectedType: " + NameOfSelectedType);
+                        };
+
+                        i++;
+                        m++;
                     }
                 }
             }
@@ -438,23 +488,61 @@ namespace Map_Editor_HoD.Controllers
                 txtY.IsSelectionActive = false;
                 txtName.IsSelectionActive = false;
 
-                WorldModels.World empty = null;
+                //WorldModels.World empty = null;
                 if (WorldController.dic_worlds.Count == 0)
                 {
                     return;
                 }
 
-                if (WorldController.TestWorld != null)
+                /*if (WorldController.TestWorld != null)
                 {
                     WorldController.dic_worlds.Remove(WorldController.TestWorld.Name, out empty);
+                    TrackingCollection<Entity> t_collection = new TrackingCollection<Entity>();
+                    bool evaluator = true;
 
+                    foreach (Entity itm in SceneSystem.SceneInstance.RootScene.Entities)
+                    {
+                        itm.Scene = null;
+                    }
+
+                    foreach (Entity itm in SceneSystem.SceneInstance.RootScene.Entities.Where(c => !c.Name.Contains("Tile")).ToList())
+                    {
+                        t_collection.Add(itm);
+                    }*/
+
+                /*foreach (Entity itm in SceneSystem.SceneInstance.RootScene.Entities)
+                {
                     foreach (Tile item in WorldController.TestWorld.dic_worldTiles.Values)
                     {
-                        this.Entity.Scene.Entities.Remove(item.Entity);
+                        if(itm.Name == item.Entity.Name)
+                        {
+                            evaluator = false;
+                        }
+
+                        if(evaluator)
+                        {
+                            //itm.Scene.Parent = null;
+                            if(!t_collection.Contains(itm))
+                            {
+                                itm.Scene = null;
+                                t_collection.Add(itm);
+                            }
+                            evaluator = true;
+                        }
                     }
-                    WorldController.TestWorld.dic_worldTiles.Clear();
-                    WorldController.TestWorld = null;
-                    WorldController.dic_worlds.Clear();
+                    //this.Entity.Scene.Entities.Remove(item.Entity);
+                }*/
+
+                /*SceneSystem.SceneInstance.RootScene.Entities.Clear();
+                SceneSystem.SceneInstance.RootScene.Entities.AddRange(t_collection);*/
+                WorldController.TestWorld.dic_worldTiles.Clear();
+                WorldController.TestWorld = null;
+                WorldController.dic_worlds.Clear();
+                //}
+                foreach (Entity itm in SceneSystem.SceneInstance.RootScene.Entities.Where(c => c.Name.Contains("Tile")).Reverse()) //.Where(c => !c.Name.Contains("Tile")).ToList())
+                {
+                    //itm.RemoveDisposeBy
+                    SceneSystem.SceneInstance.RootScene.Entities.Remove(itm);
                 }
             }
             catch (Exception ex)
@@ -510,6 +598,7 @@ namespace Map_Editor_HoD.Controllers
                     WorldController.TestWorld.FrontBack = resultY;
                     WorldController.TestWorld.RegisterWorld(txtName.Text);
                     WorldController.TestWorld.FillWorld("Grass");
+                    WorldController.TestWorld.InstanceWorldEditorReqMechanics();
                 }
                 //string b = TestWorld.ToJson();
                 //World c = World.CreateFromJson(b);

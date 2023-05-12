@@ -8,7 +8,7 @@ Packing: {}
 Sprites:
     fc61e5616b9d844510e94d4bb2e0c7da:
         Source: !file ../Tileset/Maiden-and-the-Unicorn-05-oil-on-canvas-46x52.jpg
-        Name: Maiden-and-the-Unicorn-05-oil-on-canvas-46x52
+        Name: Maiden_and_the_Unicorn_05_oil_on_canvas_46x52
         TextureRegion: {X: 0, Y: 0, Width: 1000, Height: 887}
         Center: {X: 0.0, Y: 0.0}
         Borders: {X: 0.0, Y: 0.0, Z: 0.0, W: 0.0}

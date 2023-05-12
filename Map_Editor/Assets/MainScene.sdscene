@@ -133,6 +133,17 @@ Hierarchy:
                     93c8320489164a1c73d43c19360b072f: !Map_Editor_HoD.Controllers.WorldController,Map_Editor
                         Id: ae29acb7-5e9e-429a-bcfb-9109107b7c2d
                         worldController: null
+                    2d3d6e96238a8950cb4fb7a1e8ccf66d: !StaticColliderComponent
+                        Id: e59f1073-a5fd-493a-93bc-ca9e5add6bdf
+                        CanSleep: false
+                        Restitution: 0.0
+                        Friction: 0.5
+                        RollingFriction: 0.0
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        AlwaysUpdateNaviMeshCache: false
+                        ColliderShapes: {}
         -   Entity:
                 Id: b610eace-9e23-445f-9711-724e60f64ea2
                 Name: Controller
@@ -163,7 +174,6 @@ Hierarchy:
                         dtIsLoginInProcess: 2023-04-28T18:06:23.5980552
                         CursorPos: null
                         lastPositionBeforeMove: 2023-04-28T18:06:23.5980732
-                        page: null
                         thingy1: null
                         thingy2: null
                         MainSceneImages: null

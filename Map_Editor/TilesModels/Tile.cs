@@ -14,6 +14,7 @@ using Map_Editor_HoD.Code.Models;
 using Interfaz.Utilities;
 using Map_Editor_HoD.Assistants;
 using UtilityAssistant = Interfaz.Utilities.UtilityAssistant;
+using Stride.Physics;
 
 namespace Map_Editor_HoD.TilesModels
 {
@@ -272,6 +273,76 @@ namespace Map_Editor_HoD.TilesModels
             catch (Exception ex)
             {
                 Console.WriteLine("Error (Map_Editor_HoD.Models.TilesModels.Tile) InstanceTile: " + ex.Message);
+            }
+        }
+
+        public virtual void InstanceEditorReqMechanics()
+        {
+            try
+            {
+                BoxColliderShape colShape = new BoxColliderShape(false, new Stride.Core.Mathematics.Vector3(0.8f, 0.1f, 0.8f));
+                StaticColliderComponent sComp = new StaticColliderComponent();
+                sComp.CollisionGroup = Stride.Physics.CollisionFilterGroups.CustomFilter1;
+                sComp.ColliderShape = colShape;
+
+                this.Entity.Add(sComp);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error (Map_Editor_HoD.Models.TilesModels.Tile) InstanceEditorReqMechanics: " + ex.Message);
+            }
+        }
+
+        public virtual Tile ChangeType(string nameOfSelectedType, string nameInWorld)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(nameOfSelectedType))
+                {
+                    Console.WriteLine("Tile ChangeType: " + nameOfSelectedType);
+                    return null;
+                }
+
+                Type typ = Tile.TypesOfTiles().Where(c => c.Name == nameOfSelectedType).FirstOrDefault();
+                if (typ == null)
+                {
+                    typ = Tile.TypesOfTiles().Where(c => c.FullName == nameOfSelectedType).FirstOrDefault();
+                }
+
+                object obtOfType = Activator.CreateInstance(typ); //Requires parameterless constructor.
+                                                                  //TODO: System to determine the type of enemy to make the object, prepare stats and then add it to the list
+
+                Tile prgObj = ((Tile)obtOfType);
+                Tile rnTile = this;
+
+                if (rnTile != null)
+                {
+                    prgObj.Position = rnTile.Position;
+                    prgObj.Area = rnTile.Area;
+                    prgObj.Name = rnTile.Name;
+                    prgObj.InWorldPos = rnTile.InWorldPos;
+
+                    if (rnTile.entity != null)
+                    {
+                        prgObj.entity = rnTile.entity;
+                        prgObj.entity.GetOrCreate<SpriteComponent>().SpriteProvider = SpriteFromSheet.Create(Controller.controller.SelectedSpriteSheet, nameOfSelectedType);
+
+                    }
+                }
+
+                bool isDone = false;
+                do
+                {
+                    isDone = WorldController.TestWorld.dic_worldTiles.TryUpdate(nameInWorld, prgObj, rnTile);
+                    //isDone = WorldController.TestWorld.dic_worldTiles.TryAdd(nameInWorld, prgObj);
+                }
+                while (!isDone);
+                return prgObj;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error (Map_Editor_HoD.Models.TilesModels.Tile) ChangeType(string): " + ex.Message);
+                return null;
             }
         }
         #endregion

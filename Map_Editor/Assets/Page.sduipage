@@ -24,6 +24,26 @@ Hierarchy:
                 Font: c90f3988-0544-4cbe-993f-13af7d9c23c6:StrideDefaultFont
                 TextSize: 20.0
                 TextColor: {R: 240, G: 240, B: 240, A: 255}
+        -   UIElement: !Grid
+                Id: 0fb16d77-e5c7-4454-a36f-5e1143321fab
+                DependencyProperties:
+                    4c810345b620eb3545acae58fb7668df~GridBase.ColumnSpanPropertyKey: 1
+                    a264b5dc8a1ce5a1b1f4b0277d175ed4~GridBase.ColumnPropertyKey: 2
+                BackgroundColor: {R: 0, G: 0, B: 0, A: 0}
+                Width: 322.0
+                Height: 458.0
+                HorizontalAlignment: Left
+                Margin: {Left: 28.0, Top: 226.0, Right: -350.0, Bottom: 36.0}
+                MaximumWidth: 3.4028235E+38
+                MaximumHeight: 3.4028235E+38
+                MaximumDepth: 3.4028235E+38
+                Name: SuperGralifragilisticaGrilla
+                Children: {}
+                RowDefinitions: {}
+                ColumnDefinitions:
+                    20b3b31d0fb0493879aac9636edd6ad1: {}
+                    4214a72e19a426074f74f8eafee5d4ee: {}
+                LayerDefinitions: {}
         -   UIElement: !Button
                 Id: 1c81d552-a551-4661-b227-af150e13f93a
                 DependencyProperties: {}
@@ -70,6 +90,7 @@ Hierarchy:
                     888a2820ff779f6a7cbd6289e18e613c: !Button ref!! 1c81d552-a551-4661-b227-af150e13f93a
                     9dcd229c5cbd5c00e0e47744e0309694: !Button ref!! d5be6997-828a-4a35-a3ba-fedc76fcb4d2
                     34157b71e9044c70322cc53239359532: !Button ref!! 3c7b7b09-696b-497f-9053-c25be2640c42
+                    63dc72ef4e931d5942094cd784a595cb: !Grid ref!! 0fb16d77-e5c7-4454-a36f-5e1143321fab
                 RowDefinitions: {}
                 ColumnDefinitions: {}
                 LayerDefinitions: {}
