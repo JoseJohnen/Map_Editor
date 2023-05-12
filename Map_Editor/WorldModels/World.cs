@@ -76,11 +76,23 @@ namespace Map_Editor_HoD.WorldModels
         {
             try
             {
-                string name = "World_" + WorldController.dic_worlds.Count;
+                string name = this.Name;
+
+                if(string.IsNullOrWhiteSpace(this.Name))
+                {
+                    name = "World_" + WorldController.dic_worlds.Count;
+                }
+
                 if (nameOfTheWorld != "")
                 {
                     name = nameOfTheWorld;
                 }
+
+                if(WorldController.dic_worlds.Values.Where(c => c.Name == name).ToList().Count > 0)
+                {
+                    name = "World_" + WorldController.dic_worlds.Count;
+                }
+
                 this.Name = name;
                 WorldController.dic_worlds.TryAdd(name, this);
                 return this;
@@ -229,6 +241,7 @@ namespace Map_Editor_HoD.WorldModels
                     this.Height = wrldObj.Height;
                     this.FrontBack = wrldObj.FrontBack;
                     this.dic_worldTiles = wrldObj.dic_worldTiles;
+                    this.Name = wrldObj.Name;
                 }
 
                 return wrldObj;
@@ -259,8 +272,8 @@ namespace Map_Editor_HoD.WorldModels
                 World prgObj = ((World)obtOfType);
                 prgObj.FromJson(json);
                 prgObj.RegisterWorld();
-                prgObj.InstanceWorld();
-                prgObj.InstanceWorldEditorReqMechanics();
+                //prgObj.InstanceWorld();
+                //prgObj.InstanceWorldEditorReqMechanics();
                 return prgObj;
             }
             catch (Exception ex)
@@ -400,6 +413,8 @@ namespace Map_Editor_HoD.WorldModels
                     strTemp = item.Substring(item.IndexOf("\"Value\""));
                     strTemp = strTemp.Replace("\"Value\":\"", "").Replace("}\"}","}"); //.Replace("}}]}", "}");
                     tile = Tile.CreateFromJson(strTemp);
+                    tile.InstanceTile(tile.Name,tile.Position,tile.InWorldPos);
+                    tile.InstanceEditorReqMechanics();
                     wrldObj.dic_worldTiles.TryAdd(tile.Name, tile);
                 }
                 //strTemp = strTemp.Substring(4).Replace("[", "").Replace("]", "").Replace("}}", "}");

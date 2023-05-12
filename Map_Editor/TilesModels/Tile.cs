@@ -380,6 +380,8 @@ namespace Map_Editor_HoD.TilesModels
                 pst = UtilityAssistant.ExtractValue(strJson, "InWorldPos");
                 prgObj.InWorldPos = UtilityAssistant.Vector3Deserializer(pst);
                 prgObj.Name = UtilityAssistant.ExtractValue(strJson, "Name");
+                //prgObj.InstanceTile();
+                //prgObj.InstanceEditorReqMechanics();
 
                 return prgObj;
             }

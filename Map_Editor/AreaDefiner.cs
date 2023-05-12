@@ -173,10 +173,11 @@ namespace Map_Editor_HoD
                 string nombreArea = UtilityAssistant.ExtractValue(txt, "NombreArea");
                 this.NombreArea = nombreArea;
 
-                string pointJson = UtilityAssistant.ExtractValue(txt, "Point");
-
-                string item1 = UtilityAssistant.ExtractValue(pointJson, "Item1");
-                string item2 = UtilityAssistant.ExtractValue(pointJson, "Item2");
+                //string pointJson = UtilityAssistant.ExtractValue(txt, "Point");
+                string pointJson = txt.Substring(txt.IndexOf("Point\":") + "Point\":".Length);
+                string[] suplementaryArray = pointJson.Split("Item2",StringSplitOptions.RemoveEmptyEntries);
+                string item1 = suplementaryArray[0].Replace("{ \"Item1\":","").Replace("\"","").Replace(",","");
+                string item2 = suplementaryArray[1].Replace("}}}","}").Replace(":{","{").Replace("\"{", "{"); //UtilityAssistant.ExtractValue(pointJson, "Item2");
 
                 this.point = new Pares<string, SerializedVector3>(item1, new SerializedVector3(item2));
 

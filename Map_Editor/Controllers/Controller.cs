@@ -596,7 +596,8 @@ namespace Map_Editor_HoD.Controllers
                     WorldController.TestWorld = new Map_Editor_HoD.WorldModels.BaseWorld();
                     WorldController.TestWorld.WestEast = resultX;
                     WorldController.TestWorld.FrontBack = resultY;
-                    WorldController.TestWorld.RegisterWorld(txtName.Text);
+                    WorldController.TestWorld.Name = txtName.Text;
+                    WorldController.TestWorld.RegisterWorld();
                     WorldController.TestWorld.FillWorld("Grass");
                     WorldController.TestWorld.InstanceWorldEditorReqMechanics();
                 }
@@ -687,9 +688,22 @@ namespace Map_Editor_HoD.Controllers
                 string filepath = Path.Combine(subfolderPath, fileName);
 
                 // Write the string to the text file
-                using (StreamWriter writer = new StreamWriter(filepath))
+                /*using (StreamWriter writer = new StreamWriter(filepath))
                 {
                     writer.Write(WorldController.TestWorld.ToJson());
+                }*/
+
+                if (File.Exists(filepath))
+                {
+                    // Replace the content of the file
+                    File.WriteAllText(filepath, WorldController.TestWorld.ToJson());
+                    Log.Info("File content replaced.");
+                }
+                else
+                {
+                    // Create a new file and write the content to it
+                    File.WriteAllText(filepath, WorldController.TestWorld.ToJson());
+                    Log.Info("New file created with content.");
                 }
 
                 //Aca se crea el archivo donde se guarda el mundo
