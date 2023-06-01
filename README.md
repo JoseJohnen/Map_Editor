@@ -12,7 +12,7 @@ Here is a list of details/observations relevant to his correct usage, you can se
  
 - The click receiver to change a tile of type works fine but is kinda wonky, so you want to have the clearer angle possible before pressing a tile in order to the editor not to confuse the tile you are pressing on
 
-- Suggestions or bug reports: open an issue or contact me in the relevant discord.
+- Suggestions, questions or bug reports: open an issue or contact me in the relevant discord.
 
 - The movement inside the map editor is like the standard camera movement of stride3d, i'm open to change it if and when i have a better proposal about to which shape to change it.
 
