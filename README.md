@@ -18,7 +18,7 @@ Here is a list of details/observations relevant to his correct usage, you can se
 
 - The save files are inside the folder "Worlds", the file will have the name you gave the world when you create it, otherwise will have a standard name but in this context that standarized name should never happend.
 
-- It's GLP-3, so feel free to make wherever modification you want, fork it or otherwise.
+- It's GPL-3, so feel free to make wherever modification you want, fork it or otherwise.
 
 - Try to get backups of the maps in the folder "World", otherwise you could accidentally overwritten the old version if by any means one world have the same name than the one you are working on when you save, so be carefull with that. 
 
