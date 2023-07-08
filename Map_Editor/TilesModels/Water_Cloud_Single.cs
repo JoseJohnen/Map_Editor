@@ -8,7 +8,7 @@ namespace Map_Editor_HoD.TilesModels
         {
         }
 
-        public Water_Cloud_Single() 
+        public Water_Cloud_Single()
         {
         }
     }

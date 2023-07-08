@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Interfaz.Utilities;
+using System;
 using System.IO;
 using System.Xml.Serialization;
 
 namespace Map_Editor_HoD
 {
     [Serializable]
-    public class SerializedVector3
+    public static class ExtensionSerializedVector3
     {
-        private float x;
+        /*private float x;
         private float y;
         private float z;
 
@@ -69,13 +70,6 @@ namespace Map_Editor_HoD
             Z = vector3.Z;
         }
 
-        public SerializedVector3(Stride.Core.Mathematics.Vector3 vector3)
-        {
-            X = vector3.X;
-            Y = vector3.Y;
-            Z = vector3.Z;
-        }
-
         public SerializedVector3()
         {
             X = 0;
@@ -88,6 +82,27 @@ namespace Map_Editor_HoD
             string serialized = "X:" + this.x + " Y:" + this.y + " Z:" + this.z;
             return serialized;
         }
+
+        public static SerializedVector3 operator *(System.Numerics.Quaternion quat, SerializedVector3 vec)
+        {
+            float num = quat.X * 2f;
+            float num2 = quat.Y * 2f;
+            float num3 = quat.Z * 2f;
+            float num4 = quat.X * num;
+            float num5 = quat.Y * num2;
+            float num6 = quat.Z * num3;
+            float num7 = quat.X * num2;
+            float num8 = quat.X * num3;
+            float num9 = quat.Y * num3;
+            float num10 = quat.W * num;
+            float num11 = quat.W * num2;
+            float num12 = quat.W * num3;
+            SerializedVector3 result = new SerializedVector3();
+            result.X = (1f - (num5 + num6)) * vec.x + (num7 - num12) * vec.y + (num8 + num11) * vec.z;
+            result.Y = (num7 + num12) * vec.x + (1f - (num4 + num6)) * vec.y + (num9 - num10) * vec.z;
+            result.Z = (num8 - num11) * vec.x + (num9 + num10) * vec.y + (1f - (num4 + num5)) * vec.z;
+            return result;
+        }*/
 
         public static SerializedVector3 operator *(Stride.Core.Mathematics.Quaternion quat, SerializedVector3 vec)
         {
@@ -110,26 +125,13 @@ namespace Map_Editor_HoD
             return result;
         }
 
-        public static SerializedVector3 operator *(System.Numerics.Quaternion quat, SerializedVector3 vec)
+        public SerializedVector3(Stride.Core.Mathematics.Vector3 vector3)
         {
-            float num = quat.X * 2f;
-            float num2 = quat.Y * 2f;
-            float num3 = quat.Z * 2f;
-            float num4 = quat.X * num;
-            float num5 = quat.Y * num2;
-            float num6 = quat.Z * num3;
-            float num7 = quat.X * num2;
-            float num8 = quat.X * num3;
-            float num9 = quat.Y * num3;
-            float num10 = quat.W * num;
-            float num11 = quat.W * num2;
-            float num12 = quat.W * num3;
-            SerializedVector3 result = new SerializedVector3();
-            result.X = (1f - (num5 + num6)) * vec.x + (num7 - num12) * vec.y + (num8 + num11) * vec.z;
-            result.Y = (num7 + num12) * vec.x + (1f - (num4 + num6)) * vec.y + (num9 - num10) * vec.z;
-            result.Z = (num8 - num11) * vec.x + (num9 + num10) * vec.y + (1f - (num4 + num5)) * vec.z;
-            return result;
+            X = vector3.X;
+            Y = vector3.Y;
+            Z = vector3.Z;
         }
+
 
         public Stride.Core.Mathematics.Vector3 ConvertToVector3()
         {

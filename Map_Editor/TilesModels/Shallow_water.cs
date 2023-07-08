@@ -8,7 +8,7 @@ namespace Map_Editor_HoD.TilesModels
         {
         }
 
-        public Shallow_water() 
+        public Shallow_water()
         {
         }
     }

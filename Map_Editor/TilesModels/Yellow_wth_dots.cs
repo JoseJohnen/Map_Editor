@@ -8,7 +8,7 @@ namespace Map_Editor_HoD.TilesModels
         {
         }
 
-        public Yellow_wth_dots() 
+        public Yellow_wth_dots()
         {
         }
     }

@@ -1,0 +1,15 @@
+!Model
+Id: b43ffac4-08ff-4352-b223-a547cfe4baa1
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file FabConvert.com_muro_de_tierra.fbx
+Skeleton: null
+PivotPosition: {X: 0.0, Y: 0.0, Z: 0.0}
+Materials:
+    39d7731cc05a24f55558af9cb4760154:
+        Name: mat0.001
+        MaterialInstance:
+            Material: b5214b03-3740-48ee-885f-a6e79e9673ab:Models/mat0
+Modifiers: {}
+~SourceHashes:
+    15ba90f7081c4428ef9f3226a46c6edb~FabConvert.com_muro_de_tierra.fbx: 0bbf5f4fa12557b13d53f4afa3b3a3b8

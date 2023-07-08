@@ -87,6 +87,8 @@ Hierarchy:
                     447d6a2294e2a44ab2e63c7a0429bf34: !TextBlock ref!! 4ffab824-d7ba-4c1d-a595-3dee9eec1ce3
                     b4993eb0bd958f8bec37fffb8ee1b2a0: !TextBlock ref!! 571c3e73-8899-4d9c-aeaa-8712f97702fc
                     3fd408ebf797f1e6472a3f8879d413f5: !Button ref!! bcb90a6b-acf3-446c-b99f-b4d121ee0fe4
+                    7cc611b6c05d8d6aa4d4d62ff66f09c8: !Button ref!! 901a75c2-5cdf-4a6b-a7a8-67c51e2ba584
+                    67e2786a8bfdd833794166f793b65ef4: !Button ref!! cf25e042-d799-4b13-bd93-8ef696a4dcd5
                     888a2820ff779f6a7cbd6289e18e613c: !Button ref!! 1c81d552-a551-4661-b227-af150e13f93a
                     9dcd229c5cbd5c00e0e47744e0309694: !Button ref!! d5be6997-828a-4a35-a3ba-fedc76fcb4d2
                     34157b71e9044c70322cc53239359532: !Button ref!! 3c7b7b09-696b-497f-9053-c25be2640c42
@@ -148,6 +150,20 @@ Hierarchy:
                 MouseOverImage: !SpriteFromSheet
                     Sheet: 1be3340c-b797-4557-bff7-d9be92dfdb42:StrideUIDesigns
         -   UIElement: !TextBlock
+                Id: 3e2c1886-df20-4b63-9964-3516a4919ae0
+                DependencyProperties: {}
+                BackgroundColor: {R: 0, G: 0, B: 0, A: 0}
+                HorizontalAlignment: Center
+                VerticalAlignment: Center
+                Margin: {}
+                MaximumWidth: 3.4028235E+38
+                MaximumHeight: 3.4028235E+38
+                MaximumDepth: 3.4028235E+38
+                Text: DeWall
+                Font: c90f3988-0544-4cbe-993f-13af7d9c23c6:StrideDefaultFont
+                TextSize: 20.0
+                TextColor: {R: 240, G: 240, B: 240, A: 255}
+        -   UIElement: !TextBlock
                 Id: 4ffab824-d7ba-4c1d-a595-3dee9eec1ce3
                 DependencyProperties: {}
                 BackgroundColor: {R: 0, G: 0, B: 0, A: 0}
@@ -155,11 +171,25 @@ Hierarchy:
                 Height: 26.0
                 HorizontalAlignment: Left
                 VerticalAlignment: Top
-                Margin: {Left: 37.0, Top: 22.0}
+                Margin: {Left: 31.0, Top: 23.0}
                 MaximumWidth: 3.4028235E+38
                 MaximumHeight: 3.4028235E+38
                 MaximumDepth: 3.4028235E+38
                 Text: Create World
+                Font: c90f3988-0544-4cbe-993f-13af7d9c23c6:StrideDefaultFont
+                TextSize: 20.0
+                TextColor: {R: 240, G: 240, B: 240, A: 255}
+        -   UIElement: !TextBlock
+                Id: 5589af61-486a-400a-a391-97b75c322504
+                DependencyProperties: {}
+                BackgroundColor: {R: 0, G: 0, B: 0, A: 0}
+                HorizontalAlignment: Center
+                VerticalAlignment: Center
+                Margin: {}
+                MaximumWidth: 3.4028235E+38
+                MaximumHeight: 3.4028235E+38
+                MaximumDepth: 3.4028235E+38
+                Text: Wall
                 Font: c90f3988-0544-4cbe-993f-13af7d9c23c6:StrideDefaultFont
                 TextSize: 20.0
                 TextColor: {R: 240, G: 240, B: 240, A: 255}
@@ -171,7 +201,7 @@ Hierarchy:
                 Height: 27.0
                 HorizontalAlignment: Left
                 VerticalAlignment: Top
-                Margin: {Left: 144.0, Top: 49.0}
+                Margin: {Left: 113.0, Top: 49.0}
                 MaximumWidth: 3.4028235E+38
                 MaximumHeight: 3.4028235E+38
                 MaximumDepth: 3.4028235E+38
@@ -207,13 +237,36 @@ Hierarchy:
                 Font: c90f3988-0544-4cbe-993f-13af7d9c23c6:StrideDefaultFont
                 TextSize: 20.0
                 TextColor: {R: 240, G: 240, B: 240, A: 255}
+        -   UIElement: !Button
+                Id: 901a75c2-5cdf-4a6b-a7a8-67c51e2ba584
+                DependencyProperties: {}
+                BackgroundColor: {R: 0, G: 0, B: 0, A: 0}
+                DrawLayerNumber: 2
+                Width: 68.0
+                Height: 38.0
+                HorizontalAlignment: Left
+                VerticalAlignment: Top
+                Margin: {Left: 193.0, Top: 23.0}
+                MaximumWidth: 3.4028235E+38
+                MaximumHeight: 3.4028235E+38
+                MaximumDepth: 3.4028235E+38
+                Name: btnWall
+                Content: !TextBlock ref!! 5589af61-486a-400a-a391-97b75c322504
+                PressedImage: !SpriteFromSheet
+                    Sheet: 1be3340c-b797-4557-bff7-d9be92dfdb42:StrideUIDesigns
+                    CurrentFrame: 2
+                NotPressedImage: !SpriteFromSheet
+                    Sheet: 1be3340c-b797-4557-bff7-d9be92dfdb42:StrideUIDesigns
+                    CurrentFrame: 1
+                MouseOverImage: !SpriteFromSheet
+                    Sheet: 1be3340c-b797-4557-bff7-d9be92dfdb42:StrideUIDesigns
         -   UIElement: !EditText
                 Id: 92e403e8-05a1-446d-9f2b-bc9e9feab4ef
                 DependencyProperties: {}
                 BackgroundColor: {R: 0, G: 0, B: 0, A: 0}
                 DrawLayerNumber: 5
                 CanBeHitByUser: true
-                Width: 48.0
+                Width: 47.0
                 Height: 27.0
                 HorizontalAlignment: Left
                 VerticalAlignment: Top
@@ -246,11 +299,11 @@ Hierarchy:
                 BackgroundColor: {R: 0, G: 0, B: 0, A: 0}
                 DrawLayerNumber: 5
                 CanBeHitByUser: true
-                Width: 207.0
+                Width: 238.0
                 Height: 27.0
                 HorizontalAlignment: Left
                 VerticalAlignment: Top
-                Margin: {Left: 144.0, Top: 76.0}
+                Margin: {Left: 113.0, Top: 76.0}
                 MaximumWidth: 3.4028235E+38
                 MaximumHeight: 3.4028235E+38
                 MaximumDepth: 3.4028235E+38
@@ -288,6 +341,29 @@ Hierarchy:
                 MaximumDepth: 3.4028235E+38
                 Name: btnCreate
                 Content: !TextBlock ref!! eb4fa8b4-1dfb-430a-874d-72fc91c7110e
+                PressedImage: !SpriteFromSheet
+                    Sheet: 1be3340c-b797-4557-bff7-d9be92dfdb42:StrideUIDesigns
+                    CurrentFrame: 2
+                NotPressedImage: !SpriteFromSheet
+                    Sheet: 1be3340c-b797-4557-bff7-d9be92dfdb42:StrideUIDesigns
+                    CurrentFrame: 1
+                MouseOverImage: !SpriteFromSheet
+                    Sheet: 1be3340c-b797-4557-bff7-d9be92dfdb42:StrideUIDesigns
+        -   UIElement: !Button
+                Id: cf25e042-d799-4b13-bd93-8ef696a4dcd5
+                DependencyProperties: {}
+                BackgroundColor: {R: 0, G: 0, B: 0, A: 0}
+                DrawLayerNumber: 2
+                Width: 88.0
+                Height: 38.0
+                HorizontalAlignment: Left
+                VerticalAlignment: Top
+                Margin: {Left: 263.0, Top: 23.0}
+                MaximumWidth: 3.4028235E+38
+                MaximumHeight: 3.4028235E+38
+                MaximumDepth: 3.4028235E+38
+                Name: btnDeWall
+                Content: !TextBlock ref!! 3e2c1886-df20-4b63-9964-3516a4919ae0
                 PressedImage: !SpriteFromSheet
                     Sheet: 1be3340c-b797-4557-bff7-d9be92dfdb42:StrideUIDesigns
                     CurrentFrame: 2

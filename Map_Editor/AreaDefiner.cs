@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Map_Editor_HoD
-{ 
+{
     [Serializable]
     [Stride.Core.DataContract]
     public class AreaDefiner
@@ -175,9 +175,9 @@ namespace Map_Editor_HoD
 
                 //string pointJson = UtilityAssistant.ExtractValue(txt, "Point");
                 string pointJson = txt.Substring(txt.IndexOf("Point\":") + "Point\":".Length);
-                string[] suplementaryArray = pointJson.Split("Item2",StringSplitOptions.RemoveEmptyEntries);
-                string item1 = suplementaryArray[0].Replace("{ \"Item1\":","").Replace("\"","").Replace(",","");
-                string item2 = suplementaryArray[1].Replace("}}}","}").Replace(":{","{").Replace("\"{", "{"); //UtilityAssistant.ExtractValue(pointJson, "Item2");
+                string[] suplementaryArray = pointJson.Split("Item2", StringSplitOptions.RemoveEmptyEntries);
+                string item1 = suplementaryArray[0].Replace("{ \"Item1\":", "").Replace("\"", "").Replace(",", "");
+                string item2 = suplementaryArray[1].Replace("}}}", "}").Replace(":{", "{").Replace("\"{", "{"); //UtilityAssistant.ExtractValue(pointJson, "Item2");
 
                 this.point = new Pares<string, SerializedVector3>(item1, new SerializedVector3(item2));
 
@@ -195,7 +195,7 @@ namespace Map_Editor_HoD
             try
             {
                 string txt = UtilityAssistant.CleanJSON(json);
-                if(string.IsNullOrWhiteSpace(txt))
+                if (string.IsNullOrWhiteSpace(txt))
                 {
                     txt = json;
                 }

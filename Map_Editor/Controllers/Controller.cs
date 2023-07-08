@@ -1,27 +1,27 @@
-﻿using Stride.Core.Collections;
-using Stride.Engine;
-using Stride.Graphics;
-using Stride.UI.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Timers;
-using Stride.Core.IO;
-using Stride.Rendering;
-using System.Threading.Tasks;
+﻿using Map_Editor_HoD.Assistants;
+using Map_Editor_HoD.Code.Models;
 using Map_Editor_HoD.Enums;
-using Stride.Physics;
-using Map_Editor_HoD.Assistants;
-using Material = Stride.Rendering.Material;
-using System.IO;
+using Map_Editor_HoD.FurnitureModels;
 using Map_Editor_HoD.TilesModels;
 using Map_Editor_HoD.WorldModels;
-using Stride.UI;
-using Stride.UI.Panels;
-using Stride.Rendering.Sprites;
-using Map_Editor_HoD.Code.Models;
+using Stride.Core.Collections;
+using Stride.Core.IO;
+using Stride.Engine;
+using Stride.Graphics;
 using Stride.Input;
-using Stride.Core;
+using Stride.Physics;
+using Stride.Rendering;
+using Stride.Rendering.Sprites;
+using Stride.UI;
+using Stride.UI.Controls;
+using Stride.UI.Panels;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Timers;
+using Material = Stride.Rendering.Material;
 
 namespace Map_Editor_HoD.Controllers
 {
@@ -43,6 +43,8 @@ namespace Map_Editor_HoD.Controllers
         private float medioSegundoTranscurridos = 0; //Da para un máximo de 65535, que son 18.204167 horas.
         //private float seguroMedioSegundoTranscurridos = 0;
 
+        public Prefab Wall;
+
         UIComponent uIComponent;
         EditText txtX;
         EditText txtY;
@@ -52,8 +54,12 @@ namespace Map_Editor_HoD.Controllers
         Button btnLoad;
         Button btnSave;
 
+        Button btnWall;
+        Button btnDeWall;
+        int IsCreateWall = 0;
+
         public List<Prefab> l_Prefabs = new List<Prefab>();
-        public List<Model> l_Models = new List<Model>();
+        public Dictionary<string,Model> dic_Models = new Dictionary<string,Model>();
         public List<SpriteSheet> l_Sprites = new List<SpriteSheet>();
         public List<SpriteSheet> l_Tileset = new List<SpriteSheet>();
         public List<Texture> l_Textures = new List<Texture>();
@@ -120,15 +126,16 @@ namespace Map_Editor_HoD.Controllers
 
             //Take active elements to be used
             l_Prefabs = GetItemsFromVirtualGameFolder<Prefab>("Prefabs");
-            l_Models = GetItemsFromVirtualGameFolder<Model>("Models");
+            //l_Models = GetItemsFromVirtualGameFolder<Model>("Models");
+            dic_Models = GetItemsFromVirtualGameFolder_dic<Model>("Models");
             l_Sprites = GetItemsFromVirtualGameFolder<SpriteSheet>("Sprites");
+            //l_Tileset = GetItemsFromVirtualGameFolder<SpriteSheet>("Tilesets");
             l_Tileset = GetItemsFromVirtualGameFolder<SpriteSheet>("Tilesets");
             l_Textures = GetItemsFromVirtualGameFolder<Texture>("Textures");
             l_Materials = GetItemsFromVirtualGameFolder<Material>("Materials");
             l_UI = GetItemsFromVirtualGameFolder<UIPage>("UI");
 
             //TODO: TEST: You just change the instanced sound in the right context, and maybie it start to sound.
-
             /*DicMusic.Add("BackgroundMusic",BackgroundMusic);
             DicMusic.Add("GhostMusic", GhostMusic);
 
@@ -162,7 +169,7 @@ namespace Map_Editor_HoD.Controllers
             WorldController.WorldController_Tick();
 
             ClickResult clickResult = new ClickResult();
-            if (UtilityAssistant.ScreenPositionToWorldPositionRaycast(Input.MousePosition, Controller.controller.GetActiveCamera(), Controller.controller.GetSimulation(), out clickResult))
+            if (StrideUtilityAssistant.ScreenPositionToWorldPositionRaycast(Input.MousePosition, Controller.controller.GetActiveCamera(), Controller.controller.GetSimulation(), out clickResult))
             {
                 if (Input.HasMouse)
                 {
@@ -177,7 +184,26 @@ namespace Map_Editor_HoD.Controllers
                             WorldController.TestWorld.dic_worldTiles.TryGetValue(clickResult.ClickedEntity.Name, out tle);
                             if (tle != null)
                             {
+                                Tile oldTile = tle;
+                                if (IsCreateWall == 1)
+                                {
+                                    //Add wall
+                                    tle.Furniture = new Muro_de_Tierra(tle.Name);
+                                    Console.WriteLine("IsCreateWall: " + IsCreateWall);
+                                    //tle.Furniture = 
+                                }
+                                else if (IsCreateWall == -1)
+                                {
+                                    //Remove wall
+                                    if (tle.Furniture != null)
+                                    {
+                                        tle.Furniture.RemoveFurnitureSafeFromScene();
+                                    }
+                                    Console.WriteLine("IsCreateWall: " + IsCreateWall);
+                                }
                                 tle.ChangeType(NameOfSelectedType, clickResult.ClickedEntity.Name);
+                                //bool bol = WorldController.TestWorld.dic_worldTiles.TryUpdate(clickResult.ClickedEntity.Name, tle,oldTile);
+                                //Console.WriteLine("Bol: "+bol);
                             }
                         }
                     }
@@ -279,15 +305,22 @@ namespace Map_Editor_HoD.Controllers
                         continue;
                     }
 
-                    T temp = Content.Load<T>(item);
-                    l_temp.Add(temp);
-                    i++;
-                    l_ignoreStrings.Add(item);
+                    if (!item.Contains("mat0"))
+                    {
+                        T temp = Content.Load<T>(item);
+                        l_temp.Add(temp);
+                        i++;
+                        l_ignoreStrings.Add(item);
+                    }
                 }
-                var itemFirst = l_temp[0];
-                if (itemFirst.GetType().Name == "SpriteSheet")
+
+                if (l_temp.Count > 0)
                 {
-                    l_temp = l_temp.GroupBy(x => (x as SpriteSheet).Sprites).Select(y => y.First()).ToList();
+                    var itemFirst = l_temp[0];
+                    if (itemFirst.GetType().Name == "SpriteSheet")
+                    {
+                        l_temp = l_temp.GroupBy(x => (x as SpriteSheet).Sprites).Select(y => y.First()).ToList();
+                    }
                 }
                 return l_temp;
             }
@@ -295,6 +328,125 @@ namespace Map_Editor_HoD.Controllers
             {
                 Console.WriteLine("Error: string GetItemsFromVirtualGameFolder: " + ex.Message);
                 return default(List<T>);
+            }
+        }
+
+        public Dictionary<string, T> GetItemsFromVirtualGameFolder_dic<T>(string path, string filterByName = "") where T : class
+        {
+            try
+            {
+                string strPrepared = "*";
+                if (!String.IsNullOrWhiteSpace(filterByName))
+                {
+                    strPrepared = "*" + filterByName + "*";
+                }
+
+                string[] l_strings = Controller.controller.dataFileProviderService.FileProvider.ListFiles(path, strPrepared, VirtualSearchOption.AllDirectories);
+                Dictionary<string, T> dic_temp = new Dictionary<string, T>();
+
+                string strTemp = string.Empty;
+                int i = 0;
+                List<string> l_ignoreStrings = new List<string>();
+                bool state = false;
+                string nameTemp = string.Empty;
+                foreach (string item in l_strings)
+                {
+                    if (item.Contains("/gen/") || item.Contains("__ATLAS_TEXTURE__0") || item.Contains("_Data"))
+                    {
+                        if (item.Contains("/gen/"))
+                        {
+                            strTemp = item.Substring(item.IndexOf("/gen/"));
+                            strTemp = item.Replace(strTemp, "");
+                        }
+                        else if (item.Contains("__ATLAS_TEXTURE__0"))
+                        {
+                            strTemp = item.Substring(item.IndexOf("__ATLAS_TEXTURE__0"));
+                            strTemp = item.Replace(strTemp, "");
+                        }
+                        else if (item.Contains("_Data"))
+                        {
+                            strTemp = item.Substring(item.IndexOf("_Data"));
+                            strTemp = item.Replace(strTemp, "");
+                        }
+
+                        foreach (string itm in l_ignoreStrings)
+                        {
+                            if (strTemp.ToUpper().Equals(itm.ToUpper()))
+                            {
+                                state = true;
+                                break;
+                            }
+                        }
+
+                        if (state == true)
+                        {
+                            state = false;
+                            continue;
+                        }
+
+                        //Si no ha sido registrado antes y pasa el break
+                        if(strTemp.Contains("/"))
+                        {
+                            nameTemp = strTemp.Substring(strTemp.LastIndexOf("/")+1);
+                        }
+                        T tmp = Content.Load<T>(strTemp);
+                        if (tmp.GetType().Name == "SpriteSheet")
+                        {
+                            strTemp = strTemp.Replace("Sprites/", "");
+                            foreach (string itm in l_ignoreStrings)
+                            {
+                                if (strTemp.ToUpper().Equals(itm.ToUpper()))
+                                {
+                                    state = true;
+                                    break;
+                                }
+                            }
+
+                            if (state == true)
+                            {
+                                state = false;
+                                continue;
+                            }
+
+                            Sprite spr = new Sprite();
+                            spr.Name = strTemp;
+                            (tmp as SpriteSheet).Sprites.Add(spr);
+                            l_ignoreStrings.Add(strTemp);
+                        }
+
+                        dic_temp.Add(nameTemp,tmp);
+                        i++;
+                        l_ignoreStrings.Add(item);
+                        continue;
+                    }
+
+                    if (!item.Contains("mat0"))
+                    {
+                        T temp = Content.Load<T>(item);
+                        if (item.Contains("/"))
+                        {
+                            nameTemp = item.Substring(item.LastIndexOf("/") + 1);
+                        }
+                        dic_temp.Add(nameTemp, temp);
+                        i++;
+                        l_ignoreStrings.Add(item);
+                    }
+                }
+
+                if (dic_temp.Count > 0)
+                {
+                    var itemFirst = dic_temp.First();
+                    if (itemFirst.Value.GetType().Name == "SpriteSheet")
+                    {
+                        dic_temp = dic_temp.GroupBy(x => (x.Value as SpriteSheet).Sprites).Select(y => y.First()).ToDictionary(c => c.Key, d => d.Value);
+                    }
+                }
+                return dic_temp;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: string GetItemsFromVirtualGameFolder: " + ex.Message);
+                return default(Dictionary<string,T>);
             }
         }
         #endregion
@@ -384,10 +536,16 @@ namespace Map_Editor_HoD.Controllers
                     btnLoad = (Button)re.RootElement.FindName("btnLoad");
                     btnSave = (Button)re.RootElement.FindName("btnSave");
 
+                    btnWall = (Button)re.RootElement.FindName("btnWall");
+                    btnDeWall = (Button)re.RootElement.FindName("btnDeWall");
+
                     btnCreate.Click += BtnCreate_Click;
                     btnDelete.Click += BtnDelete_Click;
                     btnLoad.Click += BtnLoad_Click;
                     btnSave.Click += BtnSave_Click;
+
+                    btnWall.Click += BtnWall_Click;
+                    btnDeWall.Click += BtnDeWall_Click;
 
                     Grid grd = (Grid)re.RootElement.FindName("SuperGralifragilisticaGrilla"); //(Grid)re.RootElement.FindVisualRoot();
                     grd.RowDefinitions.Add(new StripDefinition());
@@ -477,6 +635,40 @@ namespace Map_Editor_HoD.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine("Error PrepareUI: " + ex.Message);
+            }
+        }
+
+        private void BtnDeWall_Click(object sender, Stride.UI.Events.RoutedEventArgs e)
+        {
+            try
+            {
+                if (IsCreateWall == -1)
+                {
+                    IsCreateWall = 0;
+                    return;
+                }
+                IsCreateWall = -1;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error BtnDeWall_Click: " + ex.Message);
+            }
+        }
+
+        private void BtnWall_Click(object sender, Stride.UI.Events.RoutedEventArgs e)
+        {
+            try
+            {
+                if (IsCreateWall == 1)
+                {
+                    IsCreateWall = 0;
+                    return;
+                }
+                IsCreateWall = 1;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error BtnWall_Click: " + ex.Message);
             }
         }
 

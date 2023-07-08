@@ -20,12 +20,13 @@ namespace Map_Editor_HoD.WorldModels
         [DataMemberIgnore]
         public new ConcurrentDictionary<string, Tile> dic_worldTiles = new ConcurrentDictionary<string, Tile>();
 
-        public override System.Numerics.Vector3 Location {
+        public override System.Numerics.Vector3 Location
+        {
             get
             {
                 return base.Location;
             }
-            set 
+            set
             {
                 base.Location = value;
             }
@@ -43,10 +44,6 @@ namespace Map_Editor_HoD.WorldModels
                 }
             }
         }
-        //= new System.Numerics.Vector3(0, 0, 0);
-
-
-        //Pares<string, SerializedVector3> point, string name = ""
 
         public World()
         { }
@@ -78,7 +75,7 @@ namespace Map_Editor_HoD.WorldModels
             {
                 string name = this.Name;
 
-                if(string.IsNullOrWhiteSpace(this.Name))
+                if (string.IsNullOrWhiteSpace(this.Name))
                 {
                     name = "World_" + WorldController.dic_worlds.Count;
                 }
@@ -88,7 +85,7 @@ namespace Map_Editor_HoD.WorldModels
                     name = nameOfTheWorld;
                 }
 
-                if(WorldController.dic_worlds.Values.Where(c => c.Name == name).ToList().Count > 0)
+                if (WorldController.dic_worlds.Values.Where(c => c.Name == name).ToList().Count > 0)
                 {
                     name = "World_" + WorldController.dic_worlds.Count;
                 }
@@ -338,7 +335,7 @@ namespace Map_Editor_HoD.WorldModels
                 if (typ == null)
                 {
                     typ = World.TypesOfWorlds().Where(c => c.FullName == clase).FirstOrDefault();
-                    
+
                 }
 
                 World wrldObj = new BaseWorld();
@@ -366,7 +363,7 @@ namespace Map_Editor_HoD.WorldModels
                 strValue = UtilityAssistant.PrepareJSON(strValue);
                 int c = strValue.IndexOf("}]}");
                 string b = strValue.Substring(c + 3);
-                strValue = strValue.Replace("}]}"+b, "}]}");
+                strValue = strValue.Replace("}]}" + b, "}]}");
                 strValue = strValue.Replace("Area\":{", "{"); //ek "{" esta ahí porque hay valores al interior del string que se llaman "NombreArea", entonces para evitar que se afecten lugares del string que no deberían
                 strValue = UtilityAssistant.CleanJSON(strValue);
                 //strValue = strValue.Replace("Y\"", ", \"Y\"").Replace("Z\"", ", \"Z\"").Replace("\"Name\":", "\"Name\":"+ wrldObj.Name +",").Replace("\",\",", "\",");
@@ -392,12 +389,21 @@ namespace Map_Editor_HoD.WorldModels
                 strJsonArray[0] = tempString; //UtilityAssistant.CleanJSON(tempString);
 
                 string strTemp = strJsonArray[0].Substring(strJsonArray[0].IndexOf("dic_worldTiles")).Replace("dic_worldTiles", "");
+                strTemp = strTemp.Replace("\\u0022", "\u0022");
+                strTemp = strTemp.Replace("u0022", "\u0022");
+                strTemp = strTemp.Replace("\\u0022", "\u0022");
+                //strTemp = strTemp.Replace("\u0022", "\"");
                 Tile tile = null;
-                strTemp = UtilityAssistant.PrepareJSON(strTemp);
-                strTemp = strTemp.Replace("\"\"", "");
-                strTemp = strTemp.Substring(strTemp.IndexOf("[")+1);
-                strTemp = strTemp.Substring(0,strTemp.IndexOf("]"));
-                strTemp = strTemp.Replace("},{", "}|°|{");
+                //strTemp = UtilityAssistant.PrepareJSON(strTemp);
+                /*strTemp = strTemp.Replace("\"\"", "\"");
+                strTemp = strTemp.Replace("\"\"", "\"");
+                strTemp = strTemp.Replace("\"\"", "\"");*/
+                //strTemp = strTemp.Replace(@"\\\",@"\");
+                strTemp = strTemp.Substring(strTemp.IndexOf("[{\"Key\"") + 1);
+                //strTemp = strTemp.Substring(strTemp.IndexOf("[{")+1);
+                strTemp = strTemp.Substring(0, strTemp.IndexOf("]}"));
+                //strTemp = strTemp.Replace("},{", "}|°|{");
+                strTemp = strTemp.Replace("}\"},{", "}\"}|°|{");
                 List<string> l_string = new List<string>(strTemp.Split("|°|", StringSplitOptions.RemoveEmptyEntries));
                 foreach (string item in l_string)
                 {
@@ -411,10 +417,12 @@ namespace Map_Editor_HoD.WorldModels
                     tile = Tile.CreateFromJson(strTemp);
                     wrldObj.dic_worldTiles.TryAdd(tile.Name, tile);*/
                     strTemp = item.Substring(item.IndexOf("\"Value\""));
-                    strTemp = strTemp.Replace("\"Value\":\"", "").Replace("}\"}","}"); //.Replace("}}]}", "}");
+                    strTemp = strTemp.Replace("\"Value\":\"", "").Replace("}\"}", "}"); //.Replace("}}]}", "}");
+                    //strTemp = strTemp.Replace("\"", "u0022");
+                    //strTemp = strTemp.Replace("u0022", "\\u0022");
                     tile = Tile.CreateFromJson(strTemp);
-                    tile.InstanceTile(tile.Name,tile.Position,tile.InWorldPos);
-                    tile.InstanceEditorReqMechanics();
+                    //tile.InstanceTile();//tile.Name, tile.Position, tile.InWorldPos);
+                    //tile.InstanceEditorReqMechanics();
                     wrldObj.dic_worldTiles.TryAdd(tile.Name, tile);
                 }
                 //strTemp = strTemp.Substring(4).Replace("[", "").Replace("]", "").Replace("}}", "}");
@@ -513,7 +521,7 @@ namespace Map_Editor_HoD.WorldModels
                     ", ", strTemp,
                     "}");
 
-                string resultJson = Regex.Replace(wr, "(\"(?:[^\"\\\\]|\\\\.)*\")|\\s+", "$1");
+                //string resultJson = Regex.Replace(wr, "(\"(?:[^\"\\\\]|\\\\.)*\")|\\s+", "$1");
 
                 writer.WriteStringValue(wr);
             }

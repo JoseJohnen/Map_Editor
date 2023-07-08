@@ -1,0 +1,22 @@
+!PrefabAsset
+Id: 3eb72be6-284f-44d1-813e-9414e116f334
+SerializedVersion: {Stride: 3.1.0.1}
+Tags: []
+Hierarchy:
+    RootParts:
+        - ref!! 2d0fb831-3c37-4173-acb9-530c44422714
+    Parts:
+        -   Entity:
+                Id: 2d0fb831-3c37-4173-acb9-530c44422714
+                Name: Muro_de_Tierra
+                Components:
+                    36d27006846dd48ef6cc28d99cacefff: !TransformComponent
+                        Id: 66f691a9-7d55-4585-9cf5-7801171606f0
+                        Position: {X: 0.0, Y: 0.0, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    aa81d01346b3c7d615a4b182987f37fe: !ModelComponent
+                        Id: cd9047cb-02ed-494c-9961-351755d2b5f4
+                        Model: b43ffac4-08ff-4352-b223-a547cfe4baa1:Models/FabConvert.com_muro_de_tierra
+                        Materials: {}

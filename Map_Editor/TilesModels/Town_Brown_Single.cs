@@ -8,7 +8,7 @@ namespace Map_Editor_HoD.TilesModels
         {
         }
 
-        public Town_Brown_Single() 
+        public Town_Brown_Single()
         {
         }
     }

@@ -8,7 +8,7 @@ namespace Map_Editor_HoD.TilesModels
         {
         }
 
-        public Maiden_and_the_Unicorn_05_oil_on_canvas_46x52() 
+        public Maiden_and_the_Unicorn_05_oil_on_canvas_46x52()
         {
         }
     }

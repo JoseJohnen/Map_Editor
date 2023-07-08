@@ -8,7 +8,7 @@ namespace Map_Editor_HoD.TilesModels
         {
         }
 
-        public Sand() 
+        public Sand()
         {
         }
     }

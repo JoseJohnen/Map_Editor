@@ -1,5 +1,12 @@
-﻿using Stride.Engine;
+﻿using Interfaz.Utilities;
+using Map_Editor_HoD.Assistants;
+using Map_Editor_HoD.Code.Models;
+using Map_Editor_HoD.Controllers;
+using Map_Editor_HoD.FurnitureModels;
+using Stride.Core.Mathematics;
+using Stride.Engine;
 using Stride.Graphics;
+using Stride.Physics;
 using Stride.Rendering.Sprites;
 using System;
 using System.Collections.Generic;
@@ -9,19 +16,16 @@ using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using Map_Editor_HoD.Controllers;
-using Map_Editor_HoD.Code.Models;
-using Interfaz.Utilities;
-using Map_Editor_HoD.Assistants;
+using System.Windows;
+using Quaternion = Stride.Core.Mathematics.Quaternion;
 using UtilityAssistant = Interfaz.Utilities.UtilityAssistant;
-using Stride.Physics;
+using Vector3 = System.Numerics.Vector3;
 
 namespace Map_Editor_HoD.TilesModels
 {
     public abstract class Tile : Interfaz.Models.Tiles.Tile
     {
-        public virtual new Area Area { get => area; set => area = value; }
-
+        //private Furniture furniture = null;
         private Area area = new Area(new List<AreaDefiner>() {
             new AreaDefiner(),
             new AreaDefiner(),
@@ -29,7 +33,22 @@ namespace Map_Editor_HoD.TilesModels
             new AreaDefiner(),
         });
 
-        public override Vector3 Position
+        public virtual new Area Area { get => area; set => area = value; }
+
+        public virtual Furniture Furniture
+        {
+            get => (Furniture)base.Furniture;
+            set
+            {
+                base.Furniture = value;
+                if (base.Furniture != null)
+                {
+                    base.Furniture.Position = this.Position;
+                }
+            }
+        }
+
+        public override System.Numerics.Vector3 Position
         {
             get => base.Position;
             set
@@ -37,7 +56,7 @@ namespace Map_Editor_HoD.TilesModels
                 base.Position = value;
                 if (entity != null)
                 {
-                    entity.Transform.Position = Map_Editor_HoD.Assistants.UtilityAssistant.ConvertVector3NumericToStride(value);
+                    entity.Transform.Position = Map_Editor_HoD.Assistants.StrideUtilityAssistant.ConvertVector3NumericToStride(value);
                 }
             }
         }
@@ -69,11 +88,16 @@ namespace Map_Editor_HoD.TilesModels
                     }
                     SceneInstance sceneInstance = WorldController.game.SceneSystem.SceneInstance;
                     this.entity = sceneInstance.RootScene.Entities.Where(c => c.Name == base.Name).FirstOrDefault();
+                    if (this.entity != null)
+                    {
+                        this.Position = Map_Editor_HoD.Assistants.StrideUtilityAssistant.ConvertVector3StrideToNumeric(this.entity.Transform.Position);
+                    }
                 }
                 return entity;
             }
             set => entity = value;
         }
+
 
         public Tile()
         {
@@ -114,7 +138,7 @@ namespace Map_Editor_HoD.TilesModels
                     Converters =
                     {
                         new TileConverter(),
-                        new EntityConverter(),
+                        //new EntityConverter(),
                     }
                 };
 
@@ -133,29 +157,110 @@ namespace Map_Editor_HoD.TilesModels
             string txt = Text;
             try
             {
-                txt = UtilityAssistant.CleanJSON(txt.Replace("\u002B", "+"));
+                //string furniture = "";
+                //string TileRemanent = txt;
+                //string furnitureBase = "";
+                //txt = UtilityAssistant.CleanJSON(txt.Replace("\u002B", "+"));
 
-                JsonSerializerOptions serializeOptions = new JsonSerializerOptions
+                //Obtiene el objeto furniture, y funciona para extraerlo
+                //if (!txt.Contains("Furniture"))
+                //{
+                //    furniture = txt.Substring(txt.IndexOf("\"Furniture\":\""));
+                //    txt = txt.Replace(furniture, "|°°|");
+                //    txt = txt.Replace(",|°°|", "}");
+                //}
+
+                /*JsonSerializerOptions serializeOptions = new JsonSerializerOptions
                 {
                     Converters =
                     {
                         new TileConverter(),
                         new EntityConverter(),
                     }
+                };*/
+
+                //Tile strResult = JsonSerializer.Deserialize<Tile>(txt, serializeOptions);
+
+                //if (txt.Contains("Furniture"))
+                //{
+                //    furniture = txt.Substring(txt.IndexOf("\"Furniture\":\""));
+                //    furnitureBase = furniture.Replace("}\"}", "}");
+                //    furniture = furniture.Substring(13);
+                //    string strTemp = furniture.Replace("}\"}", "}");
+                //    strTemp = strTemp.Replace("u003E", ">").Replace("u003C", "<");
+                //    strTemp = strTemp.Replace("name", "\\\"name\\\"");
+                //    strTemp = strTemp.Replace("\"\"name\"\"", "\\\"name\\\"");
+                //    strTemp = strTemp.Replace("position", "\\\"position\\\"");
+                //    strTemp = strTemp.Replace("\"\"position\"\"", "\\\"position\\\"");
+                //    strTemp = strTemp.Replace("rotation", "\\\"rotation\\\"");
+                //    strTemp = strTemp.Replace("\"\"rotation\"\"", "\\\"rotation\\\"");
+                //    strTemp = strTemp.Replace("\\\"\"", "\\\"");
+                //    strTemp = strTemp.Replace("\"\\\"", "\\\"");
+                //    strTemp = strTemp.Replace("\\\"name\\\":\"", "\\\"name\\\":\\\"");
+                //    strTemp = strTemp.Replace("\", \\\"position", "\\\", \\\"position");
+                //    strTemp = strTemp.Replace("version=\"1.0\" encoding=\"utf-16\"", "version=\\\"1.0\\\" encoding=\\\"utf-16\\\"");
+                //    furniture = strTemp.Replace("</Quaternion>}}", "</Quaternion>}\"}");
+                //}
+
+                //TileRemanent = TileRemanent.Replace(furnitureBase, "").Replace(",\"}", "}");
+
+                //string clase = UtilityAssistant.ExtractValue(TileRemanent, "Class").Replace("\"", "");
+                //string clase = UtilityAssistant.ExtractValue(txt, "Class").Replace("\"", "");
+
+                //Type typ = Tile.TypesOfTiles().Where(c => c.Name == clase).FirstOrDefault();
+                //if (typ == null)
+                //{
+                //    typ = Tile.TypesOfTiles().Where(c => c.FullName == clase).FirstOrDefault();
+
+                //}
+
+                //Tile tilObj = new Grass();
+                //if (typ != null)
+                //{
+                //    object obtOfType = Activator.CreateInstance(typ); //Requires parameterless constructor.
+                //                                                      //TODO: System to determine the type of enemy to make the object, prepare stats and then add it to the list
+                //    tilObj = ((Tile)obtOfType);
+                //}
+
+                JsonSerializerOptions serializeOpt = new JsonSerializerOptions
+                {
+                    Converters =
+                        {
+                            new TileConverter()
+                        }
                 };
 
-                Tile strResult = JsonSerializer.Deserialize<Tile>(txt, serializeOptions);
+                Tile tilObj = JsonSerializer.Deserialize<Tile>(txt, serializeOpt);
 
-                //TODO: VER QUE EL OBJETO AL HACER TO JSON SALVE EL NOMBRE DE LA CLASE TAMBIÉN
-                //TODO2: RECUERDA QUE DEBES EXTRAER EL OBJETO
+                /*string nombre = UtilityAssistant.ExtractValue(TileRemanent, "Name").Replace("\"", "");
+                string posString = UtilityAssistant.ExtractValue(TileRemanent, "Pos").Replace("\"", "");
+                string inWorldposString = UtilityAssistant.ExtractValue(TileRemanent, "InWorldPos").Replace("\"", "");
 
-                if (strResult != null)
+                if (!string.IsNullOrWhiteSpace(nombre))
                 {
-                    this.Name = strResult.Name;
-                    this.Position = strResult.Position;
-                    this.InWorldPos = strResult.InWorldPos;
+                    tilObj.Name = nombre;
+                    this.Name = nombre;
                 }
-                return strResult;
+
+                if (!string.IsNullOrWhiteSpace(posString))
+                {
+                    tilObj.Position = Vector3Converter.Converter(posString);
+                    this.Position = tilObj.Position;
+                }
+
+                if (!string.IsNullOrWhiteSpace(inWorldposString))
+                {
+                    tilObj.InWorldPos = Vector3Converter.Converter(inWorldposString);
+                    this.InWorldPos = tilObj.InWorldPos;
+                }
+
+                if (!string.IsNullOrWhiteSpace(furniture))
+                {
+                    tilObj.Furniture = Furniture.CreateFromJson(furniture);
+                    this.Furniture = tilObj.Furniture;
+                }*/
+
+                return tilObj;
             }
             catch (Exception ex)
             {
@@ -168,8 +273,20 @@ namespace Map_Editor_HoD.TilesModels
         {
             try
             {
-                string clase = UtilityAssistant.CleanJSON(json);
-                clase = UtilityAssistant.ExtractAIInstructionData(clase, "Class").Replace("\"", "");
+                string cleanJson = json;
+                /*if (!UtilityAssistant.IsValidJson(json))
+                {
+                    cleanJson = UtilityAssistant.CleanJSON(json);
+                }*/
+                //TODO: YOU NEED A NEW METHOD TO EXTRACT THE CLASS HERE
+                //ALSO: ALL INTERFAZ CLASSES WILL BECOME "SAVER CLASES" CHECK THE FURNITURE INSIDE THE TILES EXAMPLE
+                //TO REPLICATE IN THE OTHERS
+                string clase = UtilityAssistant.ExtractValues(cleanJson, "Class").Replace("\"", "");
+
+                if (clase.Contains(","))
+                {
+                    clase = clase.Substring(1, clase.IndexOf(",") - 1);
+                }
 
                 Type typ = Tile.TypesOfTiles().Where(c => c.Name == clase).FirstOrDefault();
                 if (typ == null)
@@ -241,16 +358,19 @@ namespace Map_Editor_HoD.TilesModels
                         entity.GetOrCreate<SpriteComponent>().SpriteProvider = SpriteFromSheet.Create(spritesheet, nameSprite);
                     }
 
-                    this.Position = Pos;
+                    if (Pos != default(Vector3))
+                    {
+                        this.Position = Pos;
+                    }
 
                     // Get the size of the sprite
-                    spriteSize = Map_Editor_HoD.Assistants.UtilityAssistant.ConvertVector2StrideToNumeric(entity.GetOrCreate<SpriteComponent>().CurrentSprite.Size);
+                    spriteSize = Map_Editor_HoD.Assistants.StrideUtilityAssistant.ConvertVector2StrideToNumeric(entity.GetOrCreate<SpriteComponent>().CurrentSprite.Size);
 
                     // Calculate the corners of the sprite
-                    Vector3 topLeft = Map_Editor_HoD.Assistants.UtilityAssistant.ConvertVector3StrideToNumeric(entity.Transform.WorldMatrix.TranslationVector) + new Vector3(-spriteSize.X / 2, spriteSize.Y / 2, 0);
-                    Vector3 topRight = Map_Editor_HoD.Assistants.UtilityAssistant.ConvertVector3StrideToNumeric(entity.Transform.WorldMatrix.TranslationVector) + new Vector3(spriteSize.X / 2, spriteSize.Y / 2, 0);
-                    Vector3 bottomLeft = Map_Editor_HoD.Assistants.UtilityAssistant.ConvertVector3StrideToNumeric(entity.Transform.WorldMatrix.TranslationVector) + new Vector3(-spriteSize.X / 2, -spriteSize.Y / 2, 0);
-                    Vector3 bottomRight = Map_Editor_HoD.Assistants.UtilityAssistant.ConvertVector3StrideToNumeric(entity.Transform.WorldMatrix.TranslationVector) + new Vector3(spriteSize.X / 2, -spriteSize.Y / 2, 0);
+                    Vector3 topLeft = Map_Editor_HoD.Assistants.StrideUtilityAssistant.ConvertVector3StrideToNumeric(entity.Transform.WorldMatrix.TranslationVector) + new Vector3(-spriteSize.X / 2, spriteSize.Y / 2, 0);
+                    Vector3 topRight = Map_Editor_HoD.Assistants.StrideUtilityAssistant.ConvertVector3StrideToNumeric(entity.Transform.WorldMatrix.TranslationVector) + new Vector3(spriteSize.X / 2, spriteSize.Y / 2, 0);
+                    Vector3 bottomLeft = Map_Editor_HoD.Assistants.StrideUtilityAssistant.ConvertVector3StrideToNumeric(entity.Transform.WorldMatrix.TranslationVector) + new Vector3(-spriteSize.X / 2, -spriteSize.Y / 2, 0);
+                    Vector3 bottomRight = Map_Editor_HoD.Assistants.StrideUtilityAssistant.ConvertVector3StrideToNumeric(entity.Transform.WorldMatrix.TranslationVector) + new Vector3(spriteSize.X / 2, -spriteSize.Y / 2, 0);
                     this.Area.L_AreaDefiners[0].Point = new Pares<string, SerializedVector3>() { Item1 = "NW", Item2 = new SerializedVector3(topLeft) };
                     this.Area.L_AreaDefiners[1].Point = new Pares<string, SerializedVector3>() { Item1 = "NE", Item2 = new SerializedVector3(topRight) };
                     this.Area.L_AreaDefiners[2].Point = new Pares<string, SerializedVector3>() { Item1 = "SW", Item2 = new SerializedVector3(bottomLeft) };
@@ -263,7 +383,7 @@ namespace Map_Editor_HoD.TilesModels
                     //Entity.Transform.Rotation *= Quaternion.RotationX(Convert.ToSingle(Map_Editor_HoD.Code.Assistants.UtilityAssistant.ConvertDegreesToRadiants(90)));
 
                     //More precise rotation
-                    entity.Transform.Rotation *= Map_Editor_HoD.Assistants.UtilityAssistant.ConvertSystemNumericsToStrideQuaternion(System.Numerics.Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 2));
+                    entity.Transform.Rotation *= Map_Editor_HoD.Assistants.StrideUtilityAssistant.ConvertSystemNumericsToStrideQuaternion(System.Numerics.Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 2));
 
                     //Entity.Transform.Position = Code.Assistants.UtilityAssistant.ConvertVector3NumericToStride(Pos);
                     return;
@@ -321,6 +441,7 @@ namespace Map_Editor_HoD.TilesModels
                     prgObj.Area = rnTile.Area;
                     prgObj.Name = rnTile.Name;
                     prgObj.InWorldPos = rnTile.InWorldPos;
+                    prgObj.Furniture = rnTile.Furniture;
 
                     if (rnTile.entity != null)
                     {
@@ -380,8 +501,46 @@ namespace Map_Editor_HoD.TilesModels
                 pst = UtilityAssistant.ExtractValue(strJson, "InWorldPos");
                 prgObj.InWorldPos = UtilityAssistant.Vector3Deserializer(pst);
                 prgObj.Name = UtilityAssistant.ExtractValue(strJson, "Name");
-                //prgObj.InstanceTile();
-                //prgObj.InstanceEditorReqMechanics();
+                pst = UtilityAssistant.ExtractValue(strJson, "Furniture");
+                if (!string.IsNullOrWhiteSpace(pst) && pst != "}")
+                {
+                    pst = pst.Replace("}", "");
+                    prgObj.Furniture = Furniture.CreateFromJson(UtilityAssistant.Base64Decode(pst));
+                }
+
+                pst = UtilityAssistant.ExtractValue(strJson, "Entity");
+                JsonSerializerOptions serializeOpt = new JsonSerializerOptions
+                {
+                    Converters =
+                    {
+                        new EntityConverter()
+                    }
+                };
+
+                prgObj.Entity = JsonSerializer.Deserialize<Entity>(UtilityAssistant.Base64Decode(pst), serializeOpt);
+
+                SpriteSheet spritesheet = null;
+                string nameSprite = string.Empty;
+                foreach (SpriteSheet spSht in Controller.controller.l_Tileset)
+                {
+                    foreach (Sprite sprite in spSht.Sprites)
+                    {
+                        if (sprite.Name == prgObj.GetType().Name)
+                        {
+                            spritesheet = spSht;
+                            nameSprite = sprite.Name;
+                        }
+                    }
+                }
+
+                prgObj.Entity.GetOrCreate<SpriteComponent>().SpriteProvider = SpriteFromSheet.Create(spritesheet, nameSprite);
+
+                //prgObj.Entity.Transform.Rotation *= Map_Editor_HoD.Assistants.StrideUtilityAssistant.ConvertSystemNumericsToStrideQuaternion(System.Numerics.Quaternion.CreateFromAxisAngle(System.Numerics.Vector3.UnitX, MathF.PI / 2));
+                //prgObj.Entity.Transform.Rotation *= Quaternion.RotationYawPitchRoll(90, 0, 0);
+                //prgObj.Entity.Transform.Rotation *= Quaternion.RotationX(Convert.ToSingle(Map_Editor_HoD.Code.Assistants.UtilityAssistant.ConvertDegreesToRadiants(90)));
+
+                prgObj.InstanceEditorReqMechanics();
+                Controller.controller.Entity.Scene.Entities.Add(prgObj.Entity);
 
                 return prgObj;
             }
@@ -415,14 +574,36 @@ namespace Map_Editor_HoD.TilesModels
                 string Name = string.IsNullOrWhiteSpace(tle.Name) ? "null" : tle.Name;
                 string Position = System.Text.Json.JsonSerializer.Serialize(tle.Position, serializeOptions);
                 string InWorldPos = System.Text.Json.JsonSerializer.Serialize(tle.InWorldPos, serializeOptions);
+                string Furniture = "\"\"";
+                string entity = "\"\"";
+                if (tle.Furniture != null)
+                {
+                    Furniture = UtilityAssistant.Base64Encode(tle.Furniture.ToJson());
+                }
+
+                if (tle.Entity != null)
+                {
+                    JsonSerializerOptions serializeOpt = new JsonSerializerOptions
+                    {
+                        Converters =
+                        {
+                            new EntityConverter()
+                        }
+                    };
+
+                    entity = UtilityAssistant.Base64Encode(JsonSerializer.Serialize(tle.Entity, serializeOpt));
+                }
+
                 string Class = tle.GetType().Name;
 
                 char[] a = { '"' };
 
                 string wr = string.Concat("{ ", new string(a), "Name", new string(a), ":", new string(a), Name, new string(a),
                     ", ", new string(a), "Class", new string(a), ":", new string(a), Class, new string(a),
-                    ", ", new string(a), "Pos", new string(a), ":", Position,
+                    ", ", new string(a), "Pos", new string(a), ":", Position, 
                     ", ", new string(a), "InWorldPos", new string(a), ":", InWorldPos,
+                    ", ", new string(a), "Entity", new string(a), ":", new string(a), entity, new string(a),
+                    ", ", new string(a), "Furniture", new string(a), ":", new string(a), Furniture, new string(a),
                     "}");
 
                 string resultJson = Regex.Replace(wr, "(\"(?:[^\"\\\\]|\\\\.)*\")|\\s+", "$1");

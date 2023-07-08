@@ -1,23 +1,24 @@
-﻿using Stride.Core.Collections;
-using Stride.Core.Mathematics;
-using Stride.Engine;
-using Stride.Physics;
-using System;
-using System.Linq;
-using System.IO;
-using System.Xml.Serialization;
-using System.Text.Json;
-using Stride.Rendering.Sprites;
-using Stride.Graphics;
-using Quaternion = Stride.Core.Mathematics.Quaternion;
-using Vector3 = Stride.Core.Mathematics.Vector3;
-using Vector2 = Stride.Core.Mathematics.Vector2;
+﻿using Interfaz.Utilities;
 using Map_Editor_HoD.Controllers;
 using Map_Editor_HoD.Enums;
+using Stride.Core.Collections;
+using Stride.Core.Mathematics;
+using Stride.Engine;
+using Stride.Graphics;
+using Stride.Physics;
+using Stride.Rendering.Sprites;
+using System;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Xml.Serialization;
+using Quaternion = Stride.Core.Mathematics.Quaternion;
+using Vector2 = Stride.Core.Mathematics.Vector2;
+using Vector3 = Stride.Core.Mathematics.Vector3;
 
 namespace Map_Editor_HoD.Assistants
 {
-    public class UtilityAssistant : StartupScript
+    public class StrideUtilityAssistant : StartupScript
     {
         public static bool ScreenPositionToWorldPositionRaycast(Vector2 screenPos, CameraComponent camera, Simulation simulation, out ClickResult clickResult)
         {
@@ -45,7 +46,7 @@ namespace Map_Editor_HoD.Assistants
                 var minDistance = float.PositiveInfinity;
 
                 var result = new FastList<HitResult>();
-                if(simulation == null)
+                if (simulation == null)
                 {
                     return false;
                 }
@@ -335,7 +336,7 @@ namespace Map_Editor_HoD.Assistants
             }
         }
 
-        public static string QuaternionToXml(Quaternion quaternion)
+        /*public static string QuaternionToXml(Quaternion quaternion)
         {
             try
             {
@@ -355,7 +356,7 @@ namespace Map_Editor_HoD.Assistants
                 Console.WriteLine("Error string QuaternionToXml(Quaternion): " + ex.Message);
                 return String.Empty;
             }
-        }
+        }*/
 
         public static Vector3 ToEulerAngles(Quaternion q)
         {
@@ -617,7 +618,8 @@ namespace Map_Editor_HoD.Assistants
         {
             try
             {
-                string toProcess = xml.Replace("xmlns:xsi=http://www.w3.org/2001/XMLSchema-instance xmlns:xsd=http://www.w3.org/2001/XMLSchema", "").Replace("1.0", "\"1.0\"").Replace("utf-16", "\"utf-16\"").Replace("UTF-8", "\"UTF-8\"");
+                string toProcess = xml.Replace("xmlns:xsi=http://www.w3.org/2001/XMLSchema-instance xmlns:xsd=http://www.w3.org/2001/XMLSchema", "").Replace("1.0", "\"1.0\"").Replace("\"\"1.0\"\"", "\"1.0\"").Replace("utf-16", "\"utf-16\"").Replace("\"\"utf-16\"\"", "\"utf-16\"").Replace("UTF-8", "\"UTF-8\"").Replace("\"\"UTF-8\"\"", "\"UTF-8\"").Replace(".�M�",">");
+                toProcess = toProcess.Replace("\\u0022","\"").Replace("\"\"","\"");
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
                 using (StringReader textReader = new StringReader(toProcess))
                 {
@@ -689,7 +691,7 @@ namespace Map_Editor_HoD.Assistants
         public static Vector3 ScreenToMapPosition(Vector2 mouseScreenPosition, LockDimension lockDimension = LockDimension.None, float ammountBlock = 1.5f)
         {
             ClickResult clickResult = new ClickResult();
-            bool result = UtilityAssistant.ScreenPositionToWorldPositionRaycast(mouseScreenPosition, Controller.controller.GetActiveCamera(), Controller.controller.GetSimulation(), out clickResult);
+            bool result = StrideUtilityAssistant.ScreenPositionToWorldPositionRaycast(mouseScreenPosition, Controller.controller.GetActiveCamera(), Controller.controller.GetSimulation(), out clickResult);
 
             if (lockDimension == LockDimension.X)
             {
@@ -1186,7 +1188,7 @@ namespace Map_Editor_HoD.Assistants
             float x = target.X - obj.Transform.Position.X;
             float y = target.Z - obj.Transform.Position.Z;
             double newAngle = MathF.Atan2(y, x);
-            newAngle *= UtilityAssistant.ConvertRadiansToDegrees(newAngle);
+            newAngle *= StrideUtilityAssistant.ConvertRadiansToDegrees(newAngle);
             obj.Transform.RotationEulerXYZ = new Vector3(0, (float)newAngle, 0);
         }
 
@@ -1304,10 +1306,10 @@ namespace Map_Editor_HoD.Assistants
             try
             {
                 string strEntity = reader.GetString();
-                string[] a = UtilityAssistant.CutJson(strEntity);
+                string[] a = StrideUtilityAssistant.CutJson(strEntity);
                 Entity ent = new Entity(a[0]);
-                ent.Transform.Position = UtilityAssistant.XmlToClass<SerializedVector3>(a[1]).ConvertToVector3();
-                ent.Transform.Rotation = UtilityAssistant.XmlToClass<Quaternion>(a[2]);
+                ent.Transform.Position = StrideUtilityAssistant.XmlToClass<SerializedVector3>(a[1]).ConvertToVector3();
+                ent.Transform.Rotation = StrideUtilityAssistant.XmlToClass<Quaternion>(a[2]);
                 return ent;
             }
             catch (Exception ex)
@@ -1322,8 +1324,8 @@ namespace Map_Editor_HoD.Assistants
             try
             {
                 string name = "\"" + entity.Name + "\"";
-                string position = new SerializedVector3(entity.Transform.Position).ToXML();
-                string rotation = UtilityAssistant.QuaternionToXml(entity.Transform.Rotation);
+                string position = new Interfaz.Utilities.SerializedVector3(StrideUtilityAssistant.ConvertVector3StrideToNumeric(entity.Transform.Position)).ToXML(true);
+                string rotation = UtilityAssistant.QuaternionToXml(StrideUtilityAssistant.ConvertStrideToSystemNumericsQuaternion(entity.Transform.Rotation), true);
 
                 string resultJson = "{name:" + name + ", " + "position:" + position + ", rotation:" + rotation + "}";
                 writer.WriteStringValue(resultJson);

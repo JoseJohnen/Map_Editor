@@ -1,0 +1,7 @@
+!Texture
+Id: b13eb244-9fef-417a-9f8c-4d190a981cba
+SerializedVersion: {Stride: 2.0.0.0}
+Tags: []
+Source: !file ../../../../PoC_BreakEntityRemoval/PoC_BreakEntityRemoval/Assets/Tileset_2.png
+Type: !ColorTextureType
+    ColorKeyColor: {R: 255, G: 0, B: 255, A: 255}
