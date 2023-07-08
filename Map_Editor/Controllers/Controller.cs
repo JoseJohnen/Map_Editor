@@ -644,7 +644,7 @@ namespace Map_Editor_HoD.Controllers
             {
                 if (IsCreateWall == -1)
                 {
-                    IsCreateWall = 0;
+                    IsCreateWall = 1;
                     return;
                 }
                 IsCreateWall = -1;
@@ -661,7 +661,7 @@ namespace Map_Editor_HoD.Controllers
             {
                 if (IsCreateWall == 1)
                 {
-                    IsCreateWall = 0;
+                    IsCreateWall = -1;
                     return;
                 }
                 IsCreateWall = 1;
